@@ -56,7 +56,7 @@ export default function App({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.heading}>Order ID</Text>
         <Text style={styles.heading1}>{order.id}</Text>
-        <Text style={styles.heading1}>{order.user_id}</Text>
+        <Text style={styles.heading1}>{order.user_name}</Text>
         <View style={styles.table}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Item</Text>
