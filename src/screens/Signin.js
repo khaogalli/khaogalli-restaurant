@@ -30,22 +30,22 @@ export default function Signin({ route, navigation }) {
   };
 
   const verify = async () => {
-    if (!username.trim().match(/^[a-zA-Z0-9]+$/)) {
-      error = "Username Invalid";
-      Alert.alert("Username Invalid");
-      return;
-    }
+    // if (!username.trim().match(/^[a-zA-Z0-9]+$/)) {
+    //   error = "Username Invalid";
+    //   Alert.alert("Username Invalid");
+    //   return;
+    // }
 
-    if (password.length < 8) {
-      error = "Password should be at least 8 characters long";
-      Alert.alert("Password should be at least 8 characters long.");
-      return;
-    }
+    // if (password.length < 8) {
+    //   error = "Password should be at least 8 characters long";
+    //   Alert.alert("Password should be at least 8 characters long.");
+    //   return; gm
+    // }
 
     try {
       await login(username, password);
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data);
     }
   };
 

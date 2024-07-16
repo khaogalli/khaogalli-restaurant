@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   StatusBar,
   View,
@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import { AuthContext } from "../services/AuthContext";
+import { complete_order } from "../services/api";
 
 export default function App({ route, navigation }) {
   const orderItems = [
@@ -19,26 +21,31 @@ export default function App({ route, navigation }) {
   const [paid, setPaid] = useState(true); // status of payment feched from the database using the order id
 
   // get username from the data base using the order id
-  const username = "username"; // for testing purposes
-  const orderID = route.params.OderID;
+  const { restaurant } = useContext(AuthContext);
+  const username = restaurant.username;
+  const order = route.params.order;
   const [orderStatus, setOrderStatus] = useState(false);
 
-  goToHome = () => {
-    setOrderStatus(!orderStatus);
-    navigation.navigate("ResHome", { username }); // this is important to pass username back because we need to show the username on the home screen.
+  goToHome = async () => {
+    try {
+      let res = await complete_order(order.id);
+      navigation.navigate("ResHome", { username }); // this is important to pass username back because we need to show the username on the home screen.
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.row}>
       <Text style={styles.itemName}>{item.name}</Text>
       <Text style={styles.itemQuantity}>{item.quantity}</Text>
-      <Text style={styles.itemAmount}>{item.amount}</Text>
+      <Text style={styles.itemAmount}>{item.price * item.quantity}</Text>
     </View>
   );
 
   const getTotalAmount = () => {
-    return orderItems.reduce(
-      (total, item) => total + item.amount * item.quantity,
+    return order.items.reduce(
+      (total, item) => total + item.price * item.quantity,
       0
     );
   };
@@ -48,8 +55,8 @@ export default function App({ route, navigation }) {
       <StatusBar backgroundColor="#ad8840" />
       <View style={styles.container}>
         <Text style={styles.heading}>Order ID</Text>
-        <Text style={styles.heading1}>{orderID}</Text>
-        <Text style={styles.heading1}>~Customer ID/Name~{username}</Text>
+        <Text style={styles.heading1}>{order.id}</Text>
+        <Text style={styles.heading1}>{order.user_id}</Text>
         <View style={styles.table}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Item</Text>
@@ -57,7 +64,7 @@ export default function App({ route, navigation }) {
             <Text style={styles.headerText}>Amount</Text>
           </View>
           <FlatList
-            data={orderItems}
+            data={order.items}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
           />

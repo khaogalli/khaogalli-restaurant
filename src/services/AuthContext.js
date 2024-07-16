@@ -1,32 +1,40 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useEffect, useState } from "react";
-import { loginUser, registerUser, setToken, api_update_user } from "./api";
+import {
+  loginRestaurant,
+  registerRestaurant,
+  setToken,
+  api_update_restaurant,
+} from "./api";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [restaurant, setRestaurant] = useState(null);
 
   useEffect(() => {
-    const loadUser = async () => {
-      const userString = await AsyncStorage.getItem("user");
-      if (userString) {
-        const user = JSON.parse(userString);
-        setUser(user);
-        setToken(user.token);
+    const loadRestaurant = async () => {
+      const restaurantString = await AsyncStorage.getItem("restaurant");
+      if (restaurantString) {
+        const restaurant = JSON.parse(restaurantString);
+        setRestaurant(restaurant);
+        setToken(restaurant.token);
       }
     };
-    loadUser();
+    loadRestaurant();
   }, []);
 
   const login = async (username, password) => {
     try {
-      const response = await loginUser({ username, password });
-      const loggedInUser = response.data.user;
-      setUser(loggedInUser);
-      console.log(loggedInUser);
-      setToken(loggedInUser.token);
-      await AsyncStorage.setItem("user", JSON.stringify(loggedInUser));
+      const response = await loginRestaurant({ username, password });
+      const loggedInRestaurant = response.data.restaurant;
+      console.log("logged in restaurant" + loggedInRestaurant);
+      setRestaurant(loggedInRestaurant);
+      setToken(loggedInRestaurant.token);
+      await AsyncStorage.setItem(
+        "restaurant",
+        JSON.stringify(loggedInRestaurant)
+      );
     } catch (error) {
       throw error;
     }
@@ -34,29 +42,35 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, password) => {
     try {
-      const response = await registerUser({ username, password });
-      const loggedInUser = response.data.user;
-      setUser(loggedInUser);
-      setToken(loggedInUser.token);
-      await AsyncStorage.setItem("user", JSON.stringify(loggedInUser));
+      const response = await registerRestaurant({ username, password });
+      const loggedInRestaurant = response.data.restaurant;
+      setRestaurant(loggedInRestaurant);
+      setToken(loggedInRestaurant.token);
+      await AsyncStorage.setItem(
+        "restaurant",
+        JSON.stringify(loggedInRestaurant)
+      );
     } catch (error) {
       throw error;
     }
   };
 
   const logout = async () => {
-    setUser(null);
+    setRestaurant(null);
     setToken(null);
-    await AsyncStorage.removeItem("user");
+    await AsyncStorage.removeItem("restaurant");
   };
 
-  const update_user = async (user) => {
+  const update_restaurant = async (restaurant) => {
     try {
-      const response = await api_update_user(user);
-      const loggedInUser = response.data.user;
-      setUser(loggedInUser);
-      setToken(loggedInUser.token);
-      await AsyncStorage.setItem("user", JSON.stringify(loggedInUser));
+      const response = await api_update_restaurant(restaurant);
+      const loggedInRestaurant = response.data.restaurant;
+      setRestaurant(loggedInRestaurant);
+      setToken(loggedInRestaurant.token);
+      await AsyncStorage.setItem(
+        "restaurant",
+        JSON.stringify(loggedInRestaurant)
+      );
     } catch (error) {
       throw error;
     }
@@ -64,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, update_user }}
+      value={{ restaurant, login, register, logout, update_restaurant }}
     >
       {children}
     </AuthContext.Provider>

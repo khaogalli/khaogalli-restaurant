@@ -14,10 +14,11 @@ import {
   Pressable,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
+import { api_update_restaurant } from "../services/api";
 
 const ProfilePage = ({ route, navigation }) => {
-  const { update_user, user } = useContext(AuthContext);
-  let username = user.username;
+  const { update_restaurant, restaurant } = useContext(AuthContext);
+  let username = restaurant.username;
 
   const [userName, setUserName] = useState(username);
   const [type, setType] = useState(0); // 0 for student, 1 for restaurant //get from api
@@ -51,7 +52,7 @@ const ProfilePage = ({ route, navigation }) => {
       console.log("something");
 
       try {
-        await update_user(user);
+        await update_restaurant(user);
         navigation.navigate("Profile");
       } catch (error) {
         console.log(error);

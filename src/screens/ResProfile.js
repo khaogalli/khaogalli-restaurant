@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
 import {
@@ -9,49 +9,66 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
+import { AuthContext } from "../services/AuthContext";
+import { get_orders } from "../services/api";
 
 const ProfilePage = ({ route, navigation }) => {
-  const username = route.params.username;
-  const userID = 123456; // get from API. here for testing purpose
+  const { restaurant } = useContext(AuthContext);
+  const username = restaurant.username;
+  const userID = restaurant.id; // get from API. here for testing purpose
 
-  const history = [
-    //api end point (Restaurant Name and Restaurant ID)
-    //the history would be the orders that the restuarat completed in past 30 days.
-    {
-      orderID: "123456", //order id
-      restaurant: "Gazebo", //user ID in this case
-      date: "2021-09-01", //date of order
-      items: [
-        //items in the order
-        { id: "1", name: "Item 1", quantity: 2, amount: 10 },
-        { id: "2", name: "Item 2", quantity: 1, amount: 15 },
-        { id: "3", name: "Item 3", quantity: 3, amount: 20 },
-      ],
-    },
-    {
-      orderID: "123456",
-      restaurant: "Gazebo",
-      date: "2021-09-01",
-      items: [
-        { id: "1", name: "Item 1", quantity: 2, amount: 10 },
-        { id: "2", name: "Item 2", quantity: 1, amount: 15 },
-        { id: "3", name: "Item 3", quantity: 3, amount: 20 },
-      ],
-    },
-    {
-      orderID: "123456",
-      restaurant: "Gazebo",
-      date: "2021-09-01",
-      items: [
-        { id: "1", name: "Item 1", quantity: 2, amount: 10 },
-        { id: "2", name: "Item 2", quantity: 1, amount: 15 },
-        { id: "3", name: "Item 3", quantity: 3, amount: 20 },
-      ],
-    },
-  ];
+  goToChnagePassword = () => {
+    navigation.navigate("ChangePassword", { username });
+  };
+
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      let res = await get_orders(100);
+      console.log(res.data[0].items);
+      setHistory(res.data);
+    };
+    getData();
+  }, []);
+
+  // setHistory([
+  //   //api end point
+  //   //the history would be the orders that the user ordered in past 30 days.
+  //   {
+  //     orderID: "123456",
+  //     restaurant: "Gazebo",
+  //     date: "2021-09-01",
+  //     items: [
+  //       { id: "1", name: "Item 1", quantity: 2, amount: 10 },
+  //       { id: "2", name: "Item 2", quantity: 1, amount: 15 },
+  //       { id: "3", name: "Item 3", quantity: 3, amount: 20 },
+  //     ],
+  //   },
+  //   {
+  //     orderID: "123456",
+  //     restaurant: "Gazebo",
+  //     date: "2021-09-01",
+  //     items: [
+  //       { id: "1", name: "Item 1", quantity: 2, amount: 10 },
+  //       { id: "2", name: "Item 2", quantity: 1, amount: 15 },
+  //       { id: "3", name: "Item 3", quantity: 3, amount: 20 },
+  //     ],
+  //   },
+  //   {
+  //     orderID: "123456",
+  //     restaurant: "Gazebo",
+  //     date: "2021-09-01",
+  //     items: [
+  //       { id: "1", name: "Item 1", quantity: 2, amount: 10 },
+  //       { id: "2", name: "Item 2", quantity: 1, amount: 15 },
+  //       { id: "3", name: "Item 3", quantity: 3, amount: 20 },
+  //     ],
+  //   },
+  // ]);
 
   const icon_path = Image.resolveAssetSource(
-    // from api
+    // get from api
     require("../../assets/favicon.png")
   ).uri;
 
@@ -79,15 +96,18 @@ const ProfilePage = ({ route, navigation }) => {
               .map(
                 (order) => `
                   <tr style="text-align:center">
-                    <td>${order.orderID}</td>
-                    <td>${order.restaurant}</td>
-                    <td>${order.date}</td>
+                    <td>${order.id}</td>
+                    <td>${order.restaurant_id}</td>
+                    <td>${order.created_at.substring(
+                      0,
+                      10
+                    )}<br>${order.created_at.substring(11, 19)}</td>
                     <td>
                       <ul style="list-style-type: none">
                         ${order.items
                           .map(
                             (item) => `
-                              <li>${item.name} | ${item.quantity} | ${item.amount}</li>
+                              <li>${item.name} | ${item.quantity} | ${item.price}</li>
                             `
                           )
                           .join("")}
@@ -99,7 +119,6 @@ const ProfilePage = ({ route, navigation }) => {
               .join("")}
           </tbody>
         </table>
-        
       </body>
     </html>
   `;
@@ -123,39 +142,34 @@ const ProfilePage = ({ route, navigation }) => {
     console.log("PDF generated");
   };
 
-  const editMenu = () => {
-    console.log("Edit Menu");
+  const editmenu = () => {
+    console.log("SetMenu");
     navigation.navigate("SetMenu", { username });
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => {
-          console.log("Edit Profile");
-          navigation.navigate("ChangePassword", { username });
-        }}
-      >
+      <TouchableOpacity onPress={goToChnagePassword}>
         <Image
           source={require("../../assets/download.jpeg")}
           style={styles.profileImage}
         />
       </TouchableOpacity>
       <Text style={styles.userName}>{username}</Text>
-      <Text style={styles.regNumber}>Reg No: {userID}</Text>
+      <Text style={styles.regNumber}>{userID}</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleGeneratePDF}>
+        <TouchableOpacity onPress={editmenu}>
           <View style={styles.buttonText}>
-            <Text style={styles.name}>Download History</Text>
+            <Text style={styles.name}>Edit Menu</Text>
           </View>
         </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={editMenu}>
+        <TouchableOpacity onPress={handleGeneratePDF}>
           <View style={styles.buttonText}>
-            <Text style={styles.name}>Edit Menu</Text>
+            <Text style={styles.name}>Download History</Text>
           </View>
         </TouchableOpacity>
       </View>

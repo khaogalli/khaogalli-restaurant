@@ -27,11 +27,11 @@ export const setToken = (token) => {
   }
 };
 
-export const loginUser = (user) => {
-  return api.post("/api/users/login", { user });
+export const loginRestaurant = (restaurant) => {
+  return api.post("/api/restaurants/login", { restaurant });
 };
 
-export const registerUser = (user) => {
+export const registerRestaurant = (user) => {
   return api.post("/api/users", { user });
 };
 
@@ -51,8 +51,12 @@ export const get_orders = (days) => {
   return api.get("/api/orders/" + days);
 };
 
-export const api_update_user = (user) => {
+export const api_update_restaurant = (user) => {
   return api.patch("/api/users", { user });
+};
+
+export const complete_order = (order_id) => {
+  return api.post("/api/orders/complete/" + order_id);
 };
 
 export default api;

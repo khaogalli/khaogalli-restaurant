@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,31 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import { AuthContext } from "../services/AuthContext";
+import { get_orders } from "../services/api";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home({ route, navigation }) {
-  const username = route.params.username;
+  const { restaurant } = useContext(AuthContext);
+  const username = restaurant.username;
   const name = username;
-  const [x, setX] = useState(0); // for testing purposes
   const [i, setI] = useState(true);
-  const Orders = [
+  const [Orders, setOrders] = useState([]);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchOrders = async () => {
+        try {
+          const response = await get_orders(100);
+          console.log(response.data);
+          setOrders(response.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchOrders();
+    }, [])
+  );
+  /*const Orders = [
     // data fetched from the database using the tocken. API endpoint
     {
       OderID: "134",
@@ -45,11 +63,11 @@ export default function Home({ route, navigation }) {
       Date: "2021-10-10",
       Time: "12:30:00",
     },
-  ];
+  ];*/
 
-  goToResOrder = (OderID) => {
-    console.log(OderID);
-    navigation.navigate("ResOrder", { OderID }); // issue of navigation to ResOrder on initial render need to press back to comw to this screen.problem due to use of onpress in flat list rendering.//IDK some how issue fixed....Check once...
+  goToResOrder = (order) => {
+    console.log(order);
+    navigation.navigate("ResOrder", { order }); // issue of navigation to ResOrder on initial render need to press back to comw to this screen.problem due to use of onpress in flat list rendering.//IDK some how issue fixed....Check once...
   };
 
   goToResProfile = () => {
@@ -62,20 +80,20 @@ export default function Home({ route, navigation }) {
 
   const renderItem = ({ item }) => (
     <>
-      {item.status == i ? (
+      {item.pending == i ? (
         <Pressable
           onPress={() => {
-            goToResOrder(item.OderID);
+            goToResOrder(item);
           }}
         >
           <View style={[styles.renderItem, styles.listShadow]}>
             <View style={{ padding: 10 }}>
-              <Text>Order ID: {item.OderID}</Text>
-              <Text> Customer ID: {item.UserID}</Text>
+              <Text>Order ID</Text>
+              <Text>{item.id}</Text>
             </View>
             <View style={styles.dateTime}>
-              <Text>{item.Date}</Text>
-              <Text>{item.Time}</Text>
+              <Text>{item.created_at.substring(0, 10)}</Text>
+              <Text>{item.created_at.substring(11, 19)}</Text>
             </View>
           </View>
         </Pressable>

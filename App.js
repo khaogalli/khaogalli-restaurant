@@ -7,12 +7,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Signin from "./src/screens/Signin";
 import Signup from "./src/screens/Signup";
 import ChangePassword from "./src/screens/ChangePassword";
-//pages for user
-import Home from "./src/screens/Home";
-import Restaurants from "./src/screens/Restaurants";
-import Summary from "./src/screens/Summary";
-import Orders from "./src/screens/Orders";
-import Profile from "./src/screens/Profile";
 //pages for restaurant
 import ResHome from "./src/screens/ResHome";
 import ResOrder from "./src/screens/ResOrder";
@@ -25,9 +19,9 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   const initialScreen = "Signup";
 
-  const { user } = useContext(AuthContext);
-  console.log(user);
-  return user ? (
+  const { restaurant } = useContext(AuthContext);
+  console.log("test " + restaurant);
+  return restaurant ? (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName={initialScreen}
@@ -56,8 +50,8 @@ const App = () => {
         }}
       >
         <Stack.Screen
-          name="Home"
-          component={Home}
+          name="ResHome"
+          component={ResHome}
           options={{
             headerShown: false,
           }}
@@ -65,41 +59,6 @@ const App = () => {
         <Stack.Screen
           name="ChangePassword"
           component={ChangePassword}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Restaurants"
-          component={Restaurants}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Summary"
-          component={Summary}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Orders"
-          component={Orders}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="ResHome"
-          component={ResHome}
           options={{
             headerShown: false,
           }}
