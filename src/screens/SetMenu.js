@@ -37,7 +37,9 @@ export default function App({ route, navigation }) {
     if (editingId) {
       setMenu((prevMenu) =>
         prevMenu.map((item) =>
-          item.id === editingId ? { ...item, name: name, price: parseFloat(price) } : item
+          item.id === editingId
+            ? { ...item, name: name, price: parseFloat(price) }
+            : item
         )
       );
       setEditingId(null);
@@ -67,29 +69,35 @@ export default function App({ route, navigation }) {
   };
 
   const renderItem = ({ item }) => (
-      <View style={[styles.listItem, styles.listItemShadow]}>
-        <View style={{ padding: 10 }}>
-          <Text>Item {item.name}</Text>
-          <Text>Price {item.price}</Text>
-        </View>
-        <View style={styles.toggleSwitchPosition}>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={item.status ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {
-              toggleSwitch(item.id);
-            }}
-            value={item.status}
-          />
-        </View>
-        <TouchableOpacity style={styles.editButton} onPress={() => editItem(item.id)}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteItem(item.id)}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
+    <View style={[styles.listItem, styles.listItemShadow]}>
+      <View style={{ padding: 10, width: 200 }}>
+        <Text>{item.name}</Text>
+        <Text>{item.price}</Text>
       </View>
+      <View style={styles.toggleSwitchPosition}>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={item.status ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={() => {
+            toggleSwitch(item.id);
+          }}
+          value={item.status}
+        />
+      </View>
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => editItem(item.id)}
+      >
+        <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => deleteItem(item.id)}
+      >
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -103,12 +111,12 @@ export default function App({ route, navigation }) {
           <View style={[styles.topView, styles.headerAlign]}>
             <Text style={styles.headerText}>Edit Menu</Text>
             <TouchableOpacity
-              style={styles.doneText}
+              style={styles.saveText}
               onPress={() => {
                 navigation.navigate("Home", { Menu });
               }}
             >
-              <Text>Done</Text>
+              <Text>Save</Text>
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1 }}>
@@ -138,11 +146,10 @@ export default function App({ route, navigation }) {
               />
             </View>
             <View style={styles.inputContainer}>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={addItems}
-              >
-                <Text style={styles.addButtonText}>{editingId ? "Update" : "Add"}</Text>
+              <TouchableOpacity style={styles.addButton} onPress={addItems}>
+                <Text style={styles.addButtonText}>
+                  {editingId ? "Update" : "Add"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -153,14 +160,15 @@ export default function App({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  doneText: {
+  saveText: {
     height: 40,
+    width: 100,
     backgroundColor: "#ffbf00",
     borderWidth: 1,
     padding: 10,
     borderRadius: 10,
     marginTop: 5,
-    justifyContent: "center",
+    textAlign: "center"
   },
   inputContainer: {
     flex: 1,
@@ -190,7 +198,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 28,
   },
-  headerAlign: { flexDirection: "row", justifyContent: "space-around" },
+  headerAlign: { flexDirection: "row", justifyContent: "space-between", padding: 10 },
   toggleSwitchPosition: { padding: 10, position: "absolute", right: 0 },
   listItemShadow: {
     shadowColor: "#000",
@@ -217,8 +225,8 @@ const styles = StyleSheet.create({
   },
   topView: {
     height: 100,
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
     paddingTop: 20,
   },
   input: {
