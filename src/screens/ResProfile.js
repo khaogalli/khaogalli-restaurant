@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";

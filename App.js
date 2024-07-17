@@ -12,6 +12,7 @@ import ResHome from "./src/screens/ResHome";
 import ResOrder from "./src/screens/ResOrder";
 import SetMenu from "./src/screens/SetMenu";
 import ResProfile from "./src/screens/ResProfile";
+import PhotoUpload from "./src/screens/PhotoUpload";
 import { AuthContext, AuthProvider } from "./src/services/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -80,6 +81,13 @@ const App = () => {
         <Stack.Screen
           name="ResProfile"
           component={ResProfile}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="PhotoUpload"
+          component={PhotoUpload}
           options={{
             headerShown: false,
           }}

@@ -10,11 +10,9 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  Animated,
-  Pressable,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
-import { api_update_restaurant } from "../services/api";
+import * as ImagePicker from "expo-image-picker";
 
 const ProfilePage = ({ route, navigation }) => {
   const { update_restaurant, restaurant } = useContext(AuthContext);
@@ -28,9 +26,7 @@ const ProfilePage = ({ route, navigation }) => {
   const [pressed, setPressed] = useState(0);
 
   useEffect(() => {
-    console.log("hi1");
     const doSomething = async () => {
-      console.log("hi");
       let user = {};
       let changed = false;
       if (userName != username) {
@@ -61,51 +57,44 @@ const ProfilePage = ({ route, navigation }) => {
     doSomething();
   }, [pressed]);
 
-  // const saveChanges = () => {
-  //   console.log("hi1");
-  //   const doSomething = async () => {
-  //     console.log("hi");
-  //     let user = {};
-  //     let changed = false;
-  //     if (userName != username) {
-  //       changed = true;
-  //       user.username = userName;
-  //     }
-  //     if (password != "" && NewPassword == confirmPassword) {
-  //       // todo validate new password
-  //       user.update_pass = {
-  //         old_password: password,
-  //         new_password: confirmPassword,
-  //       };
-  //       changed = true;
-  //     }
+  const [photo, setPhoto] = useState(null);
 
-  //     if (!changed) {
-  //       return;
-  //     }
-  //     console.log("something");
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    };
 
-  //     try {
-  //       let res = await update_user(user);
-  //       console.log(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   doSomething();
-  // };
+    requestPermissions();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+      console.log(result.assets[0].uri);
+    }
+  };
 
   return (
     <>
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#ad8840" />
-        <TouchableOpacity // upload profle page yet to be made so this is a placeholder for now
+        <TouchableOpacity
           onPress={() => {
-            console.log("Edit Profile");
+            pickImage();
           }}
         >
           <Image
-            source={require("../../assets/download.jpeg")}
+            source={{ uri: photo }} //require("../../assets/download.jpeg")
             style={styles.profileImage}
           />
         </TouchableOpacity>
