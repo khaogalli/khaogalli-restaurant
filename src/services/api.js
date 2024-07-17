@@ -59,4 +59,8 @@ export const complete_order = (order_id) => {
   return api.post("/api/orders/complete/" + order_id);
 };
 
+export const update_menu = (menu) => {
+  return api.put("/api/restaurants/menu", { menu });
+};
+
 export default api;

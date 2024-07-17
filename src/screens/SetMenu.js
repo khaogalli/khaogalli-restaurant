@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
   StatusBar,
   View,
@@ -8,18 +8,33 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
-  Pressable,
   KeyboardAvoidingView,
   Switch,
   Platform,
 } from "react-native";
+import { get_menu, update_menu } from "../services/api";
+import { useFocusEffect } from "@react-navigation/native";
+import { AuthContext } from "../services/AuthContext";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 export default function App({ route, navigation }) {
-  const [Menu, setMenu] = useState([
-    { id: "1", name: "Item 1", price: 10, status: true },
-    { id: "2", name: "Item 2", price: 15, status: false },
-    { id: "3", name: "Item 3", price: 20, status: true },
-  ]);
+  const [menu, setMenu] = useState([]);
+  const { restaurant } = useContext(AuthContext);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchData() {
+        try {
+          let res = await get_menu(restaurant.id);
+          setMenu(res.data.menu);
+        } catch (error) {
+          console.log(error.response.data);
+        }
+      }
+      fetchData();
+    }, [restaurant.restaurant_id])
+  );
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -37,16 +52,18 @@ export default function App({ route, navigation }) {
     if (editingId) {
       setMenu((prevMenu) =>
         prevMenu.map((item) =>
-          item.id === editingId ? { ...item, name: name, price: parseFloat(price) } : item
+          item.id === editingId
+            ? { ...item, name: name, price: parseFloat(price) }
+            : item
         )
       );
       setEditingId(null);
     } else {
-      let id = String(parseInt(Menu.at(-1).id) + 1);
-      let newItem = {
-        id: id,
+      const newItem = {
+        id: uuidv4(),
         name: name,
         price: parseFloat(price),
+        description: "",
         status: true,
       };
       setMenu((prevMenu) => [...prevMenu, newItem]);
@@ -56,7 +73,7 @@ export default function App({ route, navigation }) {
   };
 
   const editItem = (id) => {
-    const item = Menu.find((item) => item.id === id);
+    const item = menu.find((item) => item.id === id);
     setName(item.name);
     setPrice(item.price.toString());
     setEditingId(id);
@@ -66,30 +83,45 @@ export default function App({ route, navigation }) {
     setMenu((prevMenu) => prevMenu.filter((item) => item.id !== id));
   };
 
+  const updateMenu = async () => {
+    try {
+      const newMenu = menu.map(({ id, status, ...rest }) => rest); // Removing id and status before sending to the API
+      console.log(newMenu);
+      await update_menu(newMenu);
+      navigation.navigate("ResProfile", { menu });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderItem = ({ item }) => (
-      <View style={[styles.listItem, styles.listItemShadow]}>
-        <View style={{ padding: 10 }}>
-          <Text>Item {item.name}</Text>
-          <Text>Price {item.price}</Text>
-        </View>
-        <View style={styles.toggleSwitchPosition}>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={item.status ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {
-              toggleSwitch(item.id);
-            }}
-            value={item.status}
-          />
-        </View>
-        <TouchableOpacity style={styles.editButton} onPress={() => editItem(item.id)}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteItem(item.id)}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
+    <View style={[styles.listItem, styles.listItemShadow]}>
+      <View style={{ padding: 10 }}>
+        <Text>Item {item.name}</Text>
+        <Text>Price {item.price}</Text>
       </View>
+      <View style={styles.toggleSwitchPosition}>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={item.status ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={() => toggleSwitch(item.id)}
+          value={item.status}
+        />
+      </View>
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => editItem(item.id)}
+      >
+        <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => deleteItem(item.id)}
+      >
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -102,18 +134,13 @@ export default function App({ route, navigation }) {
         <View style={styles.container}>
           <View style={[styles.topView, styles.headerAlign]}>
             <Text style={styles.headerText}>Edit Menu</Text>
-            <TouchableOpacity
-              style={styles.doneText}
-              onPress={() => {
-                navigation.navigate("Home", { Menu });
-              }}
-            >
+            <TouchableOpacity style={styles.doneText} onPress={updateMenu}>
               <Text>Done</Text>
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1 }}>
             <FlatList
-              data={Menu}
+              data={menu}
               renderItem={renderItem}
               keyExtractor={(item) => item.id}
               style={{ padding: 2 }}
@@ -138,11 +165,10 @@ export default function App({ route, navigation }) {
               />
             </View>
             <View style={styles.inputContainer}>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={addItems}
-              >
-                <Text style={styles.addButtonText}>{editingId ? "Update" : "Add"}</Text>
+              <TouchableOpacity style={styles.addButton} onPress={addItems}>
+                <Text style={styles.addButtonText}>
+                  {editingId ? "Update" : "Add"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
