@@ -54,12 +54,23 @@ export default function App({ route, navigation }) {
   const [price, setPrice] = useState("");
   const [editingId, setEditingId] = useState(null);
 
-  const toggleSwitch = (id) => {
-    setMenu((prevMenu) =>
-      prevMenu.map((item) =>
-        item.id === id ? { ...item, status: !item.status } : item
-      )
-    );
+  const toggleSwitch = async (item) => {
+    try {
+      setMenu((prevMenu) =>
+        prevMenu.map((it) =>
+          it.id === item.id ? { ...it, available: !it.available } : it
+        )
+      );
+      await update_item({ id: item.id, available: !item.available });
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      fetchData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const addItems = async () => {
@@ -183,7 +194,7 @@ export default function App({ route, navigation }) {
         <View>
           <Image
             source={{ uri: ITEM_IMAGE_URL + item.id + "?" + nonce }}
-            defaultSource={require("../../assets/download.jpeg")}
+            defaultSource={require("../../assets/grey.png")}
             style={{ height: 55, width: 55, borderRadius: 10 }}
           />
         </View>
@@ -197,10 +208,10 @@ export default function App({ route, navigation }) {
       <View style={styles.toggleSwitchPosition}>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={item.status ? "#f5dd4b" : "#f4f3f4"}
+          thumbColor={item.available ? "#f5dd4b" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={() => toggleSwitch(item.id)}
-          value={item.status}
+          onValueChange={() => toggleSwitch(item)}
+          value={item.available}
         />
       </View>
       <TouchableOpacity
@@ -228,9 +239,6 @@ export default function App({ route, navigation }) {
         <View style={styles.container}>
           <View style={[styles.topView, styles.headerAlign]}>
             <Text style={styles.headerText}>Edit Menu</Text>
-            <TouchableOpacity style={styles.saveText} onPress={updateMenu}>
-              <Text>Save</Text>
-            </TouchableOpacity>
           </View>
           <View style={{ flex: 1 }}>
             <FlatList

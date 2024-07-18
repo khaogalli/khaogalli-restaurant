@@ -114,7 +114,8 @@ export default function Home({ route, navigation }) {
           >
             <TouchableOpacity onPress={goToResProfile}>
               <Image
-                source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
+                source={{ uri: photo + "?" + nonce }}
+                defaultSource={require("../../assets/user.png")}
                 style={{
                   borderWidth: 1,
                   borderColor: "black",
@@ -126,25 +127,38 @@ export default function Home({ route, navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <View>
+        <View
+          style={{
+            height: 50,
+            borderRadius: 25,
+            marginHorizontal: 5,
+            padding: 10,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+            backgroundColor: "#ffffff",
+            marginBottom: 5,
+          }}
+        >
+          <Image
+            source={require("../../assets/looking.gif")}
+            style={{ height: 35, width: 35, borderRadius: 20, marginLeft: 5 }}
+          />
           <TextInput
             onChangeText={setSearchKey}
             value={searchKey}
             style={{
-              height: 50,
+              height: 53,
               borderRadius: 25,
-              marginHorizontal: 5,
               padding: 10,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-              backgroundColor: "#f3f5f9",
-              marginBottom: 5
+              width: "93%",
+              position: "absolute",
+              right: 0,
             }}
           />
         </View>

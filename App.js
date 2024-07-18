@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //pages common to both
 import Signin from "./src/screens/Signin";
-import Signup from "./src/screens/Signup";
 import ChangePassword from "./src/screens/ChangePassword";
 //pages for restaurant
 import ResHome from "./src/screens/ResHome";
@@ -18,7 +17,7 @@ import { AuthContext, AuthProvider } from "./src/services/AuthContext";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const initialScreen = "Signup";
+  const initialScreen = "Signin";
 
   const { restaurant } = useContext(AuthContext);
   console.log("test " + restaurant);
@@ -122,13 +121,6 @@ const App = () => {
           },
         }}
       >
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          options={{
-            headerShown: false,
-          }}
-        />
         <Stack.Screen
           name="Signin"
           component={Signin}
