@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "KhaoGalli Restaurant",
-    "slug": "KhaoGalli Restaurant",
+    "slug": "KhaoGalli",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/download.jpeg",
