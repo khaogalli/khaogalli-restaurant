@@ -24,10 +24,16 @@
       },
       "permissions": [
         "android.permission.WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.github.khaogalli.khaogalliuser"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "29c21d74-a49d-47af-a977-9341250c772a"
+      }
     }
   }
 }

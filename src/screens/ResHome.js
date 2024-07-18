@@ -8,6 +8,7 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
 import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
@@ -20,6 +21,8 @@ export default function Home({ route, navigation }) {
   const name = username;
   const [i, setI] = useState(true);
   const [Orders, setOrders] = useState([]);
+  let [searchKey, setSearchKey] = useState("");
+
   useFocusEffect(
     useCallback(() => {
       const fetchOrders = async () => {
@@ -64,16 +67,32 @@ export default function Home({ route, navigation }) {
             goToResOrder(item);
           }}
         >
-          <View style={[styles.renderItem, styles.listShadow]}>
-            <View style={{ padding: 10 }}>
-              <Text>Order ID</Text>
-              <Text>{item.id}</Text>
+          {searchKey != "" ? (
+            typeof searchKey === "string" &&
+            item.id.toLowerCase().includes(searchKey.toLowerCase()) ? (
+              <View style={[styles.renderItem, styles.listShadow]}>
+                <View style={{ padding: 10 }}>
+                  <Text>Order ID</Text>
+                  <Text>{item.id}</Text>
+                </View>
+                <View style={styles.dateTime}>
+                  <Text>{item.created_at.substring(0, 10)}</Text>
+                  <Text>{item.created_at.substring(11, 19)}</Text>
+                </View>
+              </View>
+            ) : null
+          ) : (
+            <View style={[styles.renderItem, styles.listShadow]}>
+              <View style={{ padding: 10 }}>
+                <Text>Order ID</Text>
+                <Text>{item.id}</Text>
+              </View>
+              <View style={styles.dateTime}>
+                <Text>{item.created_at.substring(0, 10)}</Text>
+                <Text>{item.created_at.substring(11, 19)}</Text>
+              </View>
             </View>
-            <View style={styles.dateTime}>
-              <Text>{item.created_at.substring(0, 10)}</Text>
-              <Text>{item.created_at.substring(11, 19)}</Text>
-            </View>
-          </View>
+          )}
         </Pressable>
       ) : null}
     </>
@@ -94,13 +113,40 @@ export default function Home({ route, navigation }) {
             }}
           >
             <TouchableOpacity onPress={goToResProfile}>
-              <View></View>
               <Image
                 source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
-                style={{borderWidth: 1, borderColor: "black", width: 50, height: 50, borderRadius: 25 }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "black",
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }}
               />
             </TouchableOpacity>
           </View>
+        </View>
+        <View>
+          <TextInput
+            onChangeText={setSearchKey}
+            value={searchKey}
+            style={{
+              height: 50,
+              borderRadius: 25,
+              marginHorizontal: 5,
+              padding: 10,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              backgroundColor: "#f3f5f9",
+              marginBottom: 5
+            }}
+          />
         </View>
         <TouchableOpacity
           onPress={filterSwitch}
