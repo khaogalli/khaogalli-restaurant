@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState, useEffect } from "react";
 import {
   StatusBar,
   View,
@@ -10,28 +10,41 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Switch,
+  Image,
   Platform,
+  Pressable,
 } from "react-native";
-import { get_menu, update_menu } from "../services/api";
+import {
+  add_item,
+  delete_item,
+  get_menu,
+  RESTAURANT_IMAGE_URL,
+  update_item,
+  update_menu,
+} from "../services/api";
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../services/AuthContext";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { genNonce } from "../services/utils";
 
 export default function App({ route, navigation }) {
   const [menu, setMenu] = useState([]);
   const { restaurant } = useContext(AuthContext);
 
+  async function fetchData() {
+    try {
+      let res = await get_menu(restaurant.id);
+      setMenu(res.data.menu);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
-      async function fetchData() {
-        try {
-          let res = await get_menu(restaurant.id);
-          setMenu(res.data.menu);
-        } catch (error) {
-          console.log(error.response.data);
-        }
-      }
       fetchData();
     }, [restaurant.restaurant_id])
   );
@@ -48,25 +61,38 @@ export default function App({ route, navigation }) {
     );
   };
 
-  const addItems = () => {
+  const addItems = async () => {
     if (editingId) {
-      setMenu((prevMenu) =>
-        prevMenu.map((item) =>
-          item.id === editingId
-            ? { ...item, name: name, price: parseFloat(price) }
-            : item
-        )
-      );
+      try {
+        let updatedItem = {
+          id: editingId,
+          name: name,
+          price: parseFloat(price),
+        };
+
+        try {
+          await update_item(updatedItem);
+        } catch (error) {
+          console.log(error);
+        }
+        fetchData();
+      } catch (error) {
+        console.log(error);
+      }
       setEditingId(null);
     } else {
       const newItem = {
-        id: uuidv4(),
         name: name,
         price: parseFloat(price),
         description: "",
         status: true,
       };
-      setMenu((prevMenu) => [...prevMenu, newItem]);
+      try {
+        await add_item(newItem);
+      } catch (error) {
+        console.log(error);
+      }
+      fetchData();
     }
     setName("");
     setPrice("");
@@ -79,8 +105,13 @@ export default function App({ route, navigation }) {
     setEditingId(id);
   };
 
-  const deleteItem = (id) => {
-    setMenu((prevMenu) => prevMenu.filter((item) => item.id !== id));
+  const deleteItem = async (id) => {
+    try {
+      await delete_item(id);
+    } catch (error) {
+      console.log(error);
+    }
+    fetchData();
   };
 
   const updateMenu = async () => {
@@ -94,12 +125,69 @@ export default function App({ route, navigation }) {
     }
   };
 
+  const [nonce, setNonce] = useState(genNonce());
+
+  const resetNonce = () => {
+    setNonce(genNonce());
+  };
+
+  const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    };
+
+    requestPermissions();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result.assets[0].uri);
+
+      try {
+        const base64 = await FileSystem.readAsStringAsync(
+          result.assets[0].uri,
+          {
+            encoding: FileSystem.EncodingType.Base64,
+          }
+        );
+
+        const res = await upload_restaurant_image(base64);
+        resetNonce();
+        console.log("Image uploaded successfully");
+      } catch (error) {
+        console.error("Error reading file or uploading image:", error);
+      }
+    }
+  };
+
   const renderItem = ({ item }) => (
     <View style={[styles.listItem, styles.listItemShadow]}>
-      <View style={{ padding: 10 }}>
-        <Text>Item {item.name}</Text>
-        <Text>Price {item.price}</Text>
+      <TouchableOpacity onPress={pickImage}>
+        <View>
+          <Image
+            source={require("../../assets/download.jpeg")}
+            style={{ height: 55, width: 55, borderRadius: 10 }}
+          />
+        </View>
+      </TouchableOpacity>
+
+      <View style={{ padding: 10, width: 160 }}>
+        <Text>{item.name}</Text>
+        <Text>{item.price}</Text>
       </View>
+
       <View style={styles.toggleSwitchPosition}>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -110,7 +198,7 @@ export default function App({ route, navigation }) {
         />
       </View>
       <TouchableOpacity
-        style={styles.editButton}
+        style={[styles.editButton]}
         onPress={() => editItem(item.id)}
       >
         <Text style={styles.buttonText}>Edit</Text>
@@ -134,8 +222,8 @@ export default function App({ route, navigation }) {
         <View style={styles.container}>
           <View style={[styles.topView, styles.headerAlign]}>
             <Text style={styles.headerText}>Edit Menu</Text>
-            <TouchableOpacity style={styles.doneText} onPress={updateMenu}>
-              <Text>Done</Text>
+            <TouchableOpacity style={styles.saveText} onPress={updateMenu}>
+              <Text>Save</Text>
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1 }}>
@@ -179,16 +267,6 @@ export default function App({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  saveText: {
-    height: 40,
-    width: 100,
-    backgroundColor: "#ffbf00",
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 5,
-    textAlign: "center"
-  },
   inputContainer: {
     flex: 1,
     alignItems: "center",
@@ -217,7 +295,11 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 28,
   },
-  headerAlign: { flexDirection: "row", justifyContent: "space-between", padding: 10 },
+  headerAlign: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
+  },
   toggleSwitchPosition: { padding: 10, position: "absolute", right: 0 },
   listItemShadow: {
     shadowColor: "#000",
@@ -272,6 +354,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     margin: 5,
+  },
+  saveText: {
+    height: 40,
+    backgroundColor: "#ffbf00",
+    borderWidth: 1,
+    borderRadius: 10,
+    marginTop: 5,
+    padding: 10,
   },
   buttonText: {
     color: "white",

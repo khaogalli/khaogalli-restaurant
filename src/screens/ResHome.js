@@ -10,8 +10,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
-import { get_orders } from "../services/api";
+import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
 import { useFocusEffect } from "@react-navigation/native";
+import { genNonce } from "../services/utils";
 
 export default function Home({ route, navigation }) {
   const { restaurant } = useContext(AuthContext);
@@ -33,37 +34,14 @@ export default function Home({ route, navigation }) {
       fetchOrders();
     }, [])
   );
-  /*const Orders = [
-    // data fetched from the database using the tocken. API endpoint
-    {
-      OderID: "134",
-      status: "0",
-      UserID: "645893",
-      Date: "2021-10-10",
-      Time: "12:30:00",
-    },
-    {
-      OderID: "12234",
-      status: "1",
-      UserID: "645893",
-      Date: "2021-10-10",
-      Time: "12:30:00",
-    },
-    {
-      OderID: "7876",
-      status: "0",
-      UserID: "645893",
-      Date: "2021-10-10",
-      Time: "12:30:00",
-    },
-    {
-      OderID: "234",
-      status: "1",
-      UserID: "645893",
-      Date: "2021-10-10",
-      Time: "12:30:00",
-    },
-  ];*/
+
+  const [nonce, setNonce] = useState(genNonce());
+
+  const resetNonce = () => {
+    setNonce(genNonce());
+  };
+
+  const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
 
   goToResOrder = (order) => {
     console.log(order);
@@ -116,7 +94,11 @@ export default function Home({ route, navigation }) {
             }}
           >
             <TouchableOpacity onPress={goToResProfile}>
-              <Image source={require("../../assets/favicon.png")} />
+              <View></View>
+              <Image
+                source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
+                style={{borderWidth: 1, borderColor: "black", width: 50, height: 50, borderRadius: 25 }}
+              />
             </TouchableOpacity>
           </View>
         </View>

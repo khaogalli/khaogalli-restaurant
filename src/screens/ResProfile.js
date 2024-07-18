@@ -1,15 +1,11 @@
-import { React, useContext, useEffect, useState } from "react";
+import { React, useCallback, useContext, useEffect, useState } from "react";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { AuthContext } from "../services/AuthContext";
-import { get_orders } from "../services/api";
+import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
+import { genNonce } from "../services/utils";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProfilePage = ({ route, navigation }) => {
   const { restaurant } = useContext(AuthContext);
@@ -146,11 +142,21 @@ const ProfilePage = ({ route, navigation }) => {
     navigation.navigate("SetMenu", { username });
   };
 
+  const [nonce, setNonce] = useState(genNonce());
+
+  const resetNonce = () => {
+    setNonce(genNonce());
+  };
+  useFocusEffect(useCallback(resetNonce, []));
+  const [photo, setPhoto] = useState(
+    RESTAURANT_IMAGE_URL + restaurant.id
+  );
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goToChnagePassword}>
         <Image
-          source={require("../../assets/download.jpeg")}
+          source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
           style={styles.profileImage}
         />
       </TouchableOpacity>

@@ -13,13 +13,17 @@ import {
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+
+import { RESTAURANT_IMAGE_URL, upload_restaurant_image } from "../services/api";
+import { genNonce } from "../services/utils";
+import axios from "axios";
 
 const ProfilePage = ({ route, navigation }) => {
   const { update_restaurant, restaurant } = useContext(AuthContext);
   let username = restaurant.username;
 
   const [userName, setUserName] = useState(username);
-  const [type, setType] = useState(0); // 0 for student, 1 for restaurant //get from api
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [NewPassword, setNewPassword] = useState("");
@@ -43,6 +47,7 @@ const ProfilePage = ({ route, navigation }) => {
       }
 
       if (!changed) {
+        navigation.navigate("Profile");
         return;
       }
       console.log("something");
@@ -57,7 +62,15 @@ const ProfilePage = ({ route, navigation }) => {
     doSomething();
   }, [pressed]);
 
-  const [photo, setPhoto] = useState(null);
+  const [nonce, setNonce] = useState(genNonce());
+
+  const resetNonce = () => {
+    setNonce(genNonce());
+  };
+
+  const [photo, setPhoto] = useState(
+    RESTAURANT_IMAGE_URL + restaurant.id
+  );
 
   useEffect(() => {
     const requestPermissions = async () => {
@@ -79,8 +92,22 @@ const ProfilePage = ({ route, navigation }) => {
     });
 
     if (!result.canceled) {
-      setPhoto(result.assets[0].uri);
       console.log(result.assets[0].uri);
+
+      try {
+        const base64 = await FileSystem.readAsStringAsync(
+          result.assets[0].uri,
+          {
+            encoding: FileSystem.EncodingType.Base64,
+          }
+        );
+
+        const res = await upload_restaurant_image(base64);
+        resetNonce();
+        console.log("Image uploaded successfully");
+      } catch (error) {
+        console.error("Error reading file or uploading image:", error);
+      }
     }
   };
 
@@ -94,7 +121,7 @@ const ProfilePage = ({ route, navigation }) => {
           }}
         >
           <Image
-            source={{ uri: photo }} //require("../../assets/download.jpeg")
+            source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
             style={styles.profileImage}
           />
         </TouchableOpacity>
