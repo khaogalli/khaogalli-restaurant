@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "KhaoGalli",
-    "slug": "KhaoGalli",
+    "name": "KhaoGalli Restaurant",
+    "slug": "KhaoGalli Restaurant",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/download.jpeg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/download.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,16 +19,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/download.jpeg",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.github.khaogalli.khaogalliuser"
+      "package": "com.github.khaogalli.khaogallirestaurant"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/download.jpeg"
     },
     "extra": {
       "eas": {
