@@ -148,15 +148,14 @@ const ProfilePage = ({ route, navigation }) => {
     setNonce(genNonce());
   };
   useFocusEffect(useCallback(resetNonce, []));
-  const [photo, setPhoto] = useState(
-    RESTAURANT_IMAGE_URL + restaurant.id
-  );
+  const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goToChnagePassword}>
         <Image
-          source={{ uri: photo + "?" + nonce }} //require("../../assets/download.jpeg")
+          source={{ uri: photo + "?" + nonce }}
+          defaultSource={require("../../assets/download.jpeg")} //require("../../assets/download.jpeg")
           style={styles.profileImage}
         />
       </TouchableOpacity>

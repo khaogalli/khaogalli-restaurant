@@ -29,38 +29,35 @@ const ProfilePage = ({ route, navigation }) => {
   const [NewPassword, setNewPassword] = useState("");
   const [pressed, setPressed] = useState(0);
 
-  useEffect(() => {
-    const doSomething = async () => {
-      let user = {};
-      let changed = false;
-      if (userName != username) {
-        changed = true;
-        user.username = userName;
-      }
-      if (password != "" && NewPassword == confirmPassword) {
-        // todo validate new password
-        user.update_pass = {
-          old_password: password,
-          new_password: confirmPassword,
-        };
-        changed = true;
-      }
+  const doSomething = async () => {
+    let user = {};
+    let changed = false;
+    if (userName != username) {
+      changed = true;
+      user.username = userName;
+    }
+    if (password != "" && NewPassword == confirmPassword) {
+      // todo validate new password
+      user.update_pass = {
+        old_password: password,
+        new_password: confirmPassword,
+      };
+      changed = true;
+    }
 
-      if (!changed) {
-        navigation.navigate("Profile");
-        return;
-      }
-      console.log("something");
+    if (!changed) {
+      navigation.navigate("ResProfile");
+      return;
+    }
+    console.log("something");
 
-      try {
-        await update_restaurant(user);
-        navigation.navigate("Profile");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    doSomething();
-  }, [pressed]);
+    try {
+      await update_restaurant(user);
+      navigation.navigate("ResProfile");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [nonce, setNonce] = useState(genNonce());
 
@@ -68,9 +65,7 @@ const ProfilePage = ({ route, navigation }) => {
     setNonce(genNonce());
   };
 
-  const [photo, setPhoto] = useState(
-    RESTAURANT_IMAGE_URL + restaurant.id
-  );
+  const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
 
   useEffect(() => {
     const requestPermissions = async () => {
@@ -165,7 +160,7 @@ const ProfilePage = ({ route, navigation }) => {
         <TouchableOpacity
           style={styles.button1}
           onPress={() => {
-            setPressed(pressed + 1);
+            doSomething();
           }}
         >
           <Text style={styles.changePasswordText}>Save Changes</Text>

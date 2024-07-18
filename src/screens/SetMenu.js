@@ -18,6 +18,7 @@ import {
   add_item,
   delete_item,
   get_menu,
+  ITEM_IMAGE_URL,
   RESTAURANT_IMAGE_URL,
   update_item,
   update_menu,
@@ -145,7 +146,7 @@ export default function App({ route, navigation }) {
     requestPermissions();
   }, []);
 
-  const pickImage = async () => {
+  const pickImage = async (id) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -163,7 +164,7 @@ export default function App({ route, navigation }) {
           }
         );
 
-        const res = await upload_restaurant_image(base64);
+        const res = await update_item({ id, image: base64 });
         resetNonce();
         console.log("Image uploaded successfully");
       } catch (error) {
@@ -174,10 +175,15 @@ export default function App({ route, navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={[styles.listItem, styles.listItemShadow]}>
-      <TouchableOpacity onPress={pickImage}>
+      <TouchableOpacity
+        onPress={() => {
+          pickImage(item.id);
+        }}
+      >
         <View>
           <Image
-            source={require("../../assets/download.jpeg")}
+            source={{ uri: ITEM_IMAGE_URL + item.id + "?" + nonce }}
+            defaultSource={require("../../assets/download.jpeg")}
             style={{ height: 55, width: 55, borderRadius: 10 }}
           />
         </View>
