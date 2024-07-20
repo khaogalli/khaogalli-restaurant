@@ -12,7 +12,6 @@ import {
   Switch,
   Image,
   Platform,
-  Pressable,
 } from "react-native";
 import {
   add_item,
@@ -52,6 +51,7 @@ export default function App({ route, navigation }) {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [editingId, setEditingId] = useState(null);
 
   const toggleSwitch = async (item) => {
@@ -80,6 +80,7 @@ export default function App({ route, navigation }) {
           id: editingId,
           name: name,
           price: parseFloat(price),
+          description: description,
         };
 
         try {
@@ -96,7 +97,7 @@ export default function App({ route, navigation }) {
       const newItem = {
         name: name,
         price: parseFloat(price),
-        description: "",
+        description: description,
         status: true,
       };
       try {
@@ -115,6 +116,7 @@ export default function App({ route, navigation }) {
     setName(item.name);
     setPrice(item.price.toString());
     setEditingId(id);
+    setDescription(item.description);
   };
 
   const deleteItem = async (id) => {
@@ -248,30 +250,44 @@ export default function App({ route, navigation }) {
               style={{ padding: 2 }}
             />
           </View>
-          <View style={styles.formHeaderContainer}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Item</Text>
-              <TextInput
-                style={[styles.input, { height: 40, width: 150 }]}
-                onChangeText={setName}
-                value={name}
-              />
+          <View
+            style={[styles.formHeaderContainer, { flexDirection: "column" }]}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Item</Text>
+                <TextInput
+                  style={[styles.input, { height: 40, width: 150 }]}
+                  onChangeText={setName}
+                  value={name}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Price</Text>
+                <TextInput
+                  style={[styles.input, { height: 40, width: 100 }]}
+                  keyboardType="numeric"
+                  onChangeText={setPrice}
+                  value={price}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <TouchableOpacity style={styles.addButton} onPress={addItems}>
+                  <Text style={styles.addButtonText}>
+                    {editingId ? "Update" : "Add"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Price</Text>
+            <View>
+              <Text style={[styles.label, { textAlign: "center" }]}>
+                Description
+              </Text>
               <TextInput
-                style={[styles.input, { height: 40, width: 100 }]}
-                keyboardType="numeric"
-                onChangeText={setPrice}
-                value={price}
+                style={[styles.input, { height: 40 }]}
+                onChangeText={setDescription}
+                value={description}
               />
-            </View>
-            <View style={styles.inputContainer}>
-              <TouchableOpacity style={styles.addButton} onPress={addItems}>
-                <Text style={styles.addButtonText}>
-                  {editingId ? "Update" : "Add"}
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -340,8 +356,6 @@ const styles = StyleSheet.create({
   },
   topView: {
     height: 100,
-    // justifyContent: "center",
-    // alignItems: "center",
     paddingTop: 20,
   },
   input: {
