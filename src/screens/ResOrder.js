@@ -83,7 +83,10 @@ export default function App({ route, navigation }) {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={goToHome} // should I route back to home page? or wait for the user to press back button? Ig former is better...
+            onPress={() => {
+              setOrderStatus(!orderStatus);
+              goToHome();
+            }} // should I route back to home page? or wait for the user to press back button? Ig former is better...
           >
             {orderStatus ? (
               <Text style={styles.buttonText}>Complete</Text>
