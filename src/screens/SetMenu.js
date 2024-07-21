@@ -10,7 +10,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Switch,
-  Image,
   Platform,
 } from "react-native";
 import {
@@ -20,7 +19,6 @@ import {
   ITEM_IMAGE_URL,
   RESTAURANT_IMAGE_URL,
   update_item,
-  update_menu,
 } from "../services/api";
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../services/AuthContext";
@@ -29,14 +27,16 @@ import { v4 as uuidv4 } from "uuid";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { genNonce } from "../services/utils";
+import { Image as ExpoImage } from "expo-image";
 
 export default function App({ route, navigation }) {
   const [menu, setMenu] = useState([]);
   const { restaurant } = useContext(AuthContext);
-
+  const [loading, setLoading] = useState(true);
   async function fetchData() {
     try {
       let res = await get_menu(restaurant.id);
+      setLoading(false);
       setMenu(res.data.menu);
     } catch (error) {
       console.log(error.response.data);
@@ -109,6 +109,7 @@ export default function App({ route, navigation }) {
     }
     setName("");
     setPrice("");
+    setDescription("");
   };
 
   const editItem = (id) => {
@@ -126,17 +127,6 @@ export default function App({ route, navigation }) {
       console.log(error);
     }
     fetchData();
-  };
-
-  const updateMenu = async () => {
-    try {
-      const newMenu = menu.map(({ id, status, ...rest }) => rest); // Removing id and status before sending to the API
-      console.log(newMenu);
-      await update_menu(newMenu);
-      navigation.navigate("ResProfile", { menu });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const [nonce, setNonce] = useState(genNonce());
@@ -194,10 +184,11 @@ export default function App({ route, navigation }) {
         }}
       >
         <View>
-          <Image
+          <ExpoImage
             source={{ uri: ITEM_IMAGE_URL + item.id + "?" + nonce }}
-            defaultSource={require("../../assets/grey.png")}
-            style={{ height: 55, width: 55, borderRadius: 10 }}
+            placeholder={require("../../assets/grey.png")}
+            priority="high"
+            style={{ height: 65, width: 65, borderRadius: 10 }}
           />
         </View>
       </TouchableOpacity>
@@ -242,14 +233,70 @@ export default function App({ route, navigation }) {
           <View style={[styles.topView, styles.headerAlign]}>
             <Text style={styles.headerText}>Edit Menu</Text>
           </View>
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={menu}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-              style={{ padding: 2 }}
-            />
-          </View>
+
+          {!loading ? (
+            <View style={{ flex: 1 }}>
+              <FlatList
+                data={menu}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                style={{ padding: 2 }}
+              />
+            </View>
+          ) : (
+            <>
+              <View
+                style={[
+                  styles.listItem,
+                  {
+                    height: 85,
+                    backgroundColor: "#333333",
+                    opacity: 0.5,
+                  },
+                ]}
+              ></View>
+              <View
+                style={[
+                  styles.listItem,
+                  {
+                    height: 85,
+                    backgroundColor: "#333333",
+                    opacity: 0.4,
+                  },
+                ]}
+              ></View>
+              <View
+                style={[
+                  styles.listItem,
+                  {
+                    height: 85,
+                    backgroundColor: "#333333",
+                    opacity: 0.3,
+                  },
+                ]}
+              ></View>
+              <View
+                style={[
+                  styles.listItem,
+                  {
+                    height: 85,
+                    backgroundColor: "#333333",
+                    opacity: 0.2,
+                  },
+                ]}
+              ></View>
+              <View
+                style={[
+                  styles.listItem,
+                  {
+                    height: 85,
+                    backgroundColor: "#333333",
+                    opacity: 0.1,
+                  },
+                ]}
+              ></View>
+            </>
+          )}
           <View
             style={[styles.formHeaderContainer, { flexDirection: "column" }]}
           >
@@ -342,7 +389,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   listItem: {
-    padding: 15,
+    padding: 10,
     marginBottom: 7,
     margin: 2,
     borderRadius: 20,
@@ -381,7 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f44336",
     padding: 10,
     borderRadius: 5,
-    margin: 5,
+    marginRight: 10,
   },
   saveText: {
     height: 40,

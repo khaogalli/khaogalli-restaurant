@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
 import {
@@ -14,10 +20,11 @@ import {
 import { AuthContext } from "../services/AuthContext";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import { Image as ExpoImage } from "expo-image";
 
 import { RESTAURANT_IMAGE_URL, upload_restaurant_image } from "../services/api";
 import { genNonce } from "../services/utils";
-import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProfilePage = ({ route, navigation }) => {
   const { update_restaurant, restaurant } = useContext(AuthContext);
@@ -27,8 +34,6 @@ const ProfilePage = ({ route, navigation }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [NewPassword, setNewPassword] = useState("");
-  const [pressed, setPressed] = useState(0);
-
   const doSomething = async () => {
     let user = {};
     let changed = false;
@@ -66,6 +71,8 @@ const ProfilePage = ({ route, navigation }) => {
   };
 
   const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
+
+  useFocusEffect(useCallback(resetNonce, []));
 
   useEffect(() => {
     const requestPermissions = async () => {
@@ -115,9 +122,10 @@ const ProfilePage = ({ route, navigation }) => {
             pickImage();
           }}
         >
-          <Image
+          <ExpoImage
             source={{ uri: photo + "?" + nonce }}
-            defaultSource={require("../../assets/user.png")}
+            placeholder={require("../../assets/user.png")}
+            priority="high"
             style={styles.profileImage}
           />
         </TouchableOpacity>

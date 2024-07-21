@@ -4,7 +4,6 @@ import {
   Text,
   StatusBar,
   StyleSheet,
-  Image,
   Pressable,
   FlatList,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import { AuthContext } from "../services/AuthContext";
 import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
 import { useFocusEffect } from "@react-navigation/native";
 import { genNonce } from "../services/utils";
+import { Image as ExpoImage } from "expo-image";
 
 export default function Home({ route, navigation }) {
   const { restaurant } = useContext(AuthContext);
@@ -22,12 +22,14 @@ export default function Home({ route, navigation }) {
   const [i, setI] = useState(true);
   const [Orders, setOrders] = useState([]);
   let [searchKey, setSearchKey] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
       const fetchOrders = async () => {
         try {
           const response = await get_orders(100);
+          setLoading(false);
           console.log(response.data);
           setOrders(response.data);
         } catch (error) {
@@ -45,6 +47,8 @@ export default function Home({ route, navigation }) {
   };
 
   const [photo, setPhoto] = useState(RESTAURANT_IMAGE_URL + restaurant.id);
+
+  useFocusEffect(useCallback(resetNonce, []));
 
   goToResOrder = (order) => {
     console.log(order);
@@ -113,9 +117,10 @@ export default function Home({ route, navigation }) {
             }}
           >
             <TouchableOpacity onPress={goToResProfile}>
-              <Image
+              <ExpoImage
                 source={{ uri: photo + "?" + nonce }}
-                defaultSource={require("../../assets/user.png")}
+                placeholder={require("../../assets/user.png")}
+                priority="high"
                 style={{
                   borderWidth: 1,
                   borderColor: "black",
@@ -145,7 +150,7 @@ export default function Home({ route, navigation }) {
             marginBottom: 5,
           }}
         >
-          <Image
+          <ExpoImage
             source={require("../../assets/looking.gif")}
             style={{ height: 35, width: 35, borderRadius: 20, marginLeft: 5 }}
           />
@@ -173,14 +178,69 @@ export default function Home({ route, navigation }) {
         >
           <View>{i ? <Text>Pending</Text> : <Text>Completed</Text>}</View>
         </TouchableOpacity>
-        <View style={styles.bottomView}>
-          <FlatList
-            style={{ width: "100%", marginTop: 5 }}
-            data={Orders}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+        {!loading ? (
+          <View style={styles.bottomView}>
+            <FlatList
+              style={{ width: "100%", marginTop: 5 }}
+              data={Orders}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        ) : (
+          <>
+            <View
+              style={[
+                styles.renderItem,
+                {
+                  height: 85,
+                  backgroundColor: "#333333",
+                  opacity: 0.5,
+                },
+              ]}
+            ></View>
+            <View
+              style={[
+                styles.renderItem,
+                {
+                  height: 85,
+                  backgroundColor: "#333333",
+                  opacity: 0.4,
+                },
+              ]}
+            ></View>
+            <View
+              style={[
+                styles.renderItem,
+                {
+                  height: 85,
+                  backgroundColor: "#333333",
+                  opacity: 0.3,
+                },
+              ]}
+            ></View>
+            <View
+              style={[
+                styles.renderItem,
+                {
+                  height: 85,
+                  backgroundColor: "#333333",
+                  opacity: 0.2,
+                },
+              ]}
+            ></View>
+            <View
+              style={[
+                styles.renderItem,
+                {
+                  height: 85,
+                  backgroundColor: "#333333",
+                  opacity: 0.1,
+                },
+              ]}
+            ></View>
+          </>
+        )}
       </View>
     </>
   );
