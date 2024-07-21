@@ -33,7 +33,7 @@ const ProfilePage = ({ route, navigation }) => {
 
   const icon_path = Image.resolveAssetSource(
     // get from api
-    require("../../assets/download.jpeg")
+    require("../../assets/download.png")
   ).uri;
 
   const html = `

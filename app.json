@@ -4,10 +4,10 @@
     "slug": "KhaoGalli",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/download.jpeg",
+    "icon": "./assets/",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/download.jpeg",
+      "image": "./assets/",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/download.jpeg",
+        "foregroundImage": "./assets/",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -28,7 +28,7 @@
       "package": "com.github.khaogalli.khaogallirestaurant"
     },
     "web": {
-      "favicon": "./assets/download.jpeg"
+      "favicon": "./assets/"
     },
     "extra": {
       "eas": {
