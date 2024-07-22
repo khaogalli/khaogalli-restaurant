@@ -60,7 +60,10 @@ export default function Signin({ route, navigation }) {
             <StatusBar backgroundColor="#ad8840" />
 
             <View style={[styles.center, styles.h1]}>
-              <Image style={styles.logo} source={require("../../assets/")} />
+              <Image
+                style={styles.logo}
+                source={require("../../assets/download.png")}
+              />
 
               <Text style={styles.signinText}>Sign in</Text>
               <View style={styles.formContainer}>
