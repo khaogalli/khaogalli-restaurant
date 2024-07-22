@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  RefreshControl,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
 import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
@@ -23,19 +24,24 @@ export default function Home({ route, navigation }) {
   const [Orders, setOrders] = useState([]);
   let [searchKey, setSearchKey] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const fetchOrders = async () => {
+    try {
+      setRefreshing(true);
+      const response = await get_orders(100);
+      setLoading(false);
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+      console.log(response.data);
+      setOrders(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useFocusEffect(
     useCallback(() => {
-      const fetchOrders = async () => {
-        try {
-          const response = await get_orders(100);
-          setLoading(false);
-          console.log(response.data);
-          setOrders(response.data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
       fetchOrders();
     }, [])
   );
@@ -185,6 +191,12 @@ export default function Home({ route, navigation }) {
               data={Orders}
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={fetchOrders}
+                />
+              }
             />
           </View>
         ) : (
