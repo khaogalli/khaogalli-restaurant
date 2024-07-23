@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Switch,
   Platform,
+  Alert,
 } from "react-native";
 import {
   add_item,
@@ -195,7 +196,7 @@ export default function App({ route, navigation }) {
 
       <View style={{ padding: 10, width: 160 }}>
         <Text>{item.name}</Text>
-        <Text>{item.price}</Text>
+        <Text> Rs. {item.price}</Text>
       </View>
 
       <View style={styles.toggleSwitchPosition}>
@@ -215,7 +216,16 @@ export default function App({ route, navigation }) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => deleteItem(item.id)}
+        onPress={() => {
+          Alert.alert("Delete", "Are you sure you want to delete the item", [
+            {
+              text: "Cancel",
+              style: "cancel",
+            }, 
+            { text: "OK", onPress: () => deleteItem(item.id) },
+          ]);
+          
+        }}
       >
         <Text style={styles.buttonText}>Delete</Text>
       </TouchableOpacity>
