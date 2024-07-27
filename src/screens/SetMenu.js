@@ -196,7 +196,7 @@ export default function App({ route, navigation }) {
 
       <View style={{ padding: 10, width: 160 }}>
         <Text>{item.name}</Text>
-        <Text> Rs. {item.price}</Text>
+        <Text>Rs. {item.price}</Text>
       </View>
 
       <View style={styles.toggleSwitchPosition}>
@@ -221,10 +221,9 @@ export default function App({ route, navigation }) {
             {
               text: "Cancel",
               style: "cancel",
-            }, 
+            },
             { text: "OK", onPress: () => deleteItem(item.id) },
           ]);
-          
         }}
       >
         <Text style={styles.buttonText}>Delete</Text>
@@ -355,7 +354,6 @@ export default function App({ route, navigation }) {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    flex: 1,
     alignItems: "center",
   },
   formHeaderContainer: {
@@ -421,6 +419,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     color: "black",
+    marginRight: 10,
   },
   label: {
     fontSize: 18,

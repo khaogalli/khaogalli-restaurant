@@ -12,19 +12,9 @@ import { AuthContext } from "../services/AuthContext";
 import { complete_order } from "../services/api";
 
 export default function App({ route, navigation }) {
-  const orderItems = [
-    // data fetched from the database using the order id
-    { id: "1", name: "Item 1", quantity: 2, amount: 10 },
-    { id: "2", name: "Item 2", quantity: 1, amount: 15 },
-    { id: "3", name: "Item 3", quantity: 3, amount: 20 },
-  ];
-  const [paid, setPaid] = useState(true); // status of payment feched from the database using the order id
-
-  // get username from the data base using the order id
   const { restaurant } = useContext(AuthContext);
   const username = restaurant.username;
   const order = route.params.order;
-  const [orderStatus, setOrderStatus] = useState(false);
 
   goToHome = async () => {
     try {
@@ -74,26 +64,19 @@ export default function App({ route, navigation }) {
           <Text style={styles.totalAmount}>Rs. {getTotalAmount()}</Text>
         </View>
         <View>
-          {paid ? (
-            <Text style={styles.paidStatus}>Paid</Text>
-          ) : (
-            <Text style={styles.paidStatus}>Not Paid</Text>
-          )}
+          <Text style={styles.paidStatus}>Paid</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setOrderStatus(!orderStatus);
-              goToHome();
-            }} // should I route back to home page? or wait for the user to press back button? Ig former is better...
-          >
-            {orderStatus ? (
-              <Text style={styles.buttonText}>Complete</Text>
-            ) : (
+          {order.status == "paid" ? (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                goToHome();
+              }}
+            >
               <Text style={styles.buttonText}>Pending</Text>
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>

@@ -20,7 +20,7 @@ export default function Home({ route, navigation }) {
   const { restaurant } = useContext(AuthContext);
   const username = restaurant.username;
   const name = username;
-  const [i, setI] = useState(true);
+  const [i, setI] = useState("paid");
   const [Orders, setOrders] = useState([]);
   let [searchKey, setSearchKey] = useState("");
   const [loading, setLoading] = useState(true);
@@ -66,12 +66,13 @@ export default function Home({ route, navigation }) {
   };
 
   filterSwitch = () => {
-    setI(!i);
+    if (i == "paid") setI("completed");
+    else setI("paid");
   };
 
   const renderItem = ({ item }) => (
     <>
-      {item.pending == i ? (
+      {item.status == i ? (
         <Pressable
           onPress={() => {
             goToResOrder(item);
@@ -177,12 +178,14 @@ export default function Home({ route, navigation }) {
           onPress={filterSwitch}
           style={[
             {
-              backgroundColor: i ? "red" : "green",
+              backgroundColor: i == "paid" ? "red" : "green",
             },
             styles.filterButton,
           ]}
         >
-          <View>{i ? <Text>Pending</Text> : <Text>Completed</Text>}</View>
+          <View>
+            {i == "paid" ? <Text>Pending</Text> : <Text>Completed</Text>}
+          </View>
         </TouchableOpacity>
         {!loading ? (
           <View style={styles.bottomView}>
