@@ -45,7 +45,7 @@ const ProfilePage = ({ route, navigation }) => {
         </div>
       </div>
         <h1 style="text-align:center">Order Statement</h1>
-        <p style="text-align:center; font-size:28" >${username}</p>
+        <p style="text-align:center; font-size:28" >${restaurant.name}</p>
         <table style="border-collapse: collapse; width: 100%;">
           <thead>
             <tr  style="background-color: #ffbf00; text-align: center;">    
@@ -132,7 +132,7 @@ const ProfilePage = ({ route, navigation }) => {
           style={styles.profileImage}
         />
       </TouchableOpacity>
-      <Text style={styles.userName}>{username}</Text>
+      <Text style={styles.userName}>{restaurant.name}</Text>
       <Text style={styles.regNumber}>{userID}</Text>
 
       <View style={styles.buttonContainer}>

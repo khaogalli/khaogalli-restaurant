@@ -19,7 +19,7 @@ import { Image as ExpoImage } from "expo-image";
 export default function Home({ route, navigation }) {
   const { restaurant } = useContext(AuthContext);
   const username = restaurant.username;
-  const name = username;
+  const name = restaurant.name;
   const [i, setI] = useState("paid");
   const [Orders, setOrders] = useState([]);
   let [searchKey, setSearchKey] = useState("");

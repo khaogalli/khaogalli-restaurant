@@ -179,35 +179,28 @@ export default function App({ route, navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={[styles.listItem, styles.listItemShadow]}>
-      <TouchableOpacity
-        onPress={() => {
-          pickImage(item.id);
-        }}
-      >
-        <View>
-          <ExpoImage
-            source={{ uri: ITEM_IMAGE_URL + item.id + "?" + nonce }}
-            placeholder={require("../../assets/grey.png")}
-            priority="high"
-            style={{ height: 65, width: 65, borderRadius: 10 }}
-          />
-        </View>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            pickImage(item.id);
+          }}
+        >
+          <View>
+            <ExpoImage
+              source={{ uri: ITEM_IMAGE_URL + item.id + "?" + nonce }}
+              placeholder={require("../../assets/grey.png")}
+              priority="high"
+              style={{ height: 65, width: 65, borderRadius: 10 }}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
 
-      <View style={{ padding: 10, width: 160 }}>
+      <View style={{ padding: 10, flex: 1 }}>
         <Text>{item.name}</Text>
         <Text>Rs. {item.price}</Text>
       </View>
 
-      <View style={styles.toggleSwitchPosition}>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={item.available ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={() => toggleSwitch(item)}
-          value={item.available}
-        />
-      </View>
       <TouchableOpacity
         style={[styles.editButton]}
         onPress={() => editItem(item.id)}
@@ -228,6 +221,15 @@ export default function App({ route, navigation }) {
       >
         <Text style={styles.buttonText}>Delete</Text>
       </TouchableOpacity>
+      <View style={styles.toggleSwitchPosition}>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={item.available ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={() => toggleSwitch(item)}
+          value={item.available}
+        />
+      </View>
     </View>
   );
 
@@ -385,7 +387,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
   },
-  toggleSwitchPosition: { padding: 10, position: "absolute", right: 0 },
+  toggleSwitchPosition: { padding: 5 },
   listItemShadow: {
     shadowColor: "#000",
     shadowOffset: {
@@ -437,7 +439,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f44336",
     padding: 10,
     borderRadius: 5,
-    marginRight: 10,
   },
   saveText: {
     height: 40,
