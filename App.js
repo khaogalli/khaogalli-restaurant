@@ -12,6 +12,7 @@ import ResOrder from "./src/screens/ResOrder";
 import SetMenu from "./src/screens/SetMenu";
 import ResProfile from "./src/screens/ResProfile";
 import PhotoUpload from "./src/screens/PhotoUpload";
+import Analysis from "./src/screens/Analysis";
 import { AuthContext, AuthProvider } from "./src/services/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -73,6 +74,13 @@ const App = () => {
         <Stack.Screen
           name="SetMenu"
           component={SetMenu}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Analysis"
+          component={Analysis}
           options={{
             headerShown: false,
           }}
