@@ -186,19 +186,41 @@ const ProfilePage = ({ route, navigation }) => {
 
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <View style={{ margin: 6 }}>
-          <TouchableOpacity onPress={showOpenTime}>
-            <Text style={{ fontSize: 18 }}>Open Time</Text>
+          <TouchableOpacity
+            onPress={showOpenTime}
+            style={{
+              borderBottomWidth: 2,
+              borderBottomColor: "#e26a00",
+              marginBottom: 5,
+              marginRight: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, textAlign: "center" }}>Open Time</Text>
           </TouchableOpacity>
           <View>
-            <Text>{open_time.toLocaleTimeString()}</Text>
+            <Text style={{ textAlign: "center", color: "#e26a00" }}>
+              {open_time.toLocaleTimeString().replace(/(.*)\D\d+/, "$1")}
+            </Text>
           </View>
         </View>
         <View style={{ margin: 6 }}>
-          <TouchableOpacity onPress={showCloseTime}>
-            <Text style={{ fontSize: 18 }}>Close Time</Text>
+          <TouchableOpacity
+            onPress={showCloseTime}
+            style={{
+              borderBottomWidth: 2,
+              borderBottomColor: "#e26a00",
+              marginBottom: 5,
+              marginLeft: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, textAlign: "center" }}>
+              Close Time
+            </Text>
           </TouchableOpacity>
           <View>
-            <Text>{close_time.toLocaleTimeString()}</Text>
+            <Text style={{ textAlign: "center", color: "#e26a00" }}>
+              {close_time.toLocaleTimeString().replace(/(.*)\D\d+/, "$1")}
+            </Text>
           </View>
         </View>
       </View>
