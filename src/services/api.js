@@ -55,8 +55,8 @@ export const get_orders = (days) => {
   return api.get("/api/orders/" + days);
 };
 
-export const api_update_restaurant = (user) => {
-  return api.patch("/api/users", { user });
+export const api_update_restaurant = (restaurant) => {
+  return api.patch("/api/restaurants", { restaurant });
 };
 
 export const complete_order = (order_id) => {
@@ -84,7 +84,7 @@ export const delete_item = (item_id) => {
 };
 
 export const stats = () => {
-  return api.get("/api/stats");
+  return api.get("/api/stats/restaurants");
 };
 
 export default api;

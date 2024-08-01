@@ -25,6 +25,7 @@ export default function Home({ route, navigation }) {
   let [searchKey, setSearchKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -58,7 +59,7 @@ export default function Home({ route, navigation }) {
 
   goToResOrder = (order) => {
     console.log(order);
-    navigation.navigate("ResOrder", { order }); // issue of navigation to ResOrder on initial render need to press back to comw to this screen.problem due to use of onpress in flat list rendering.//IDK some how issue fixed....Check once...
+    navigation.navigate("ResOrder", { order });
   };
 
   goToResProfile = () => {

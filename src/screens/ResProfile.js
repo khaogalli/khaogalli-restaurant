@@ -1,17 +1,34 @@
 import { React, useCallback, useContext, useEffect, useState } from "react";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import { AuthContext } from "../services/AuthContext";
-import { get_orders, RESTAURANT_IMAGE_URL } from "../services/api";
+import {
+  api_update_restaurant,
+  get_orders,
+  RESTAURANT_IMAGE_URL,
+} from "../services/api";
 import { genNonce } from "../services/utils";
 import { useFocusEffect } from "@react-navigation/native";
 import { Image as ExpoImage } from "expo-image";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const ProfilePage = ({ route, navigation }) => {
-  const { restaurant } = useContext(AuthContext);
+  const { restaurant, update_restaurant } = useContext(AuthContext);
   const username = restaurant.username;
   const userID = restaurant.id;
+  const [showOpen, setShowOpen] = useState(false);
+  const [showClose, setShowClose] = useState(false);
+  console.log(restaurant.open_time);
+  let open_time = new Date(restaurant.open_time);
+  let close_time = new Date(restaurant.close_time);
 
   const { logout } = useContext(AuthContext);
 
@@ -24,15 +41,45 @@ const ProfilePage = ({ route, navigation }) => {
   useEffect(() => {
     const getData = async () => {
       let res = await get_orders(100);
-
       console.log(res.data[0].items);
       setHistory(res.data);
     };
     getData();
   }, []);
 
+  const onChangeOpen = async (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    setShowOpen(false);
+    try {
+      res = await update_restaurant({
+        open_time: currentTime,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onChangeClose = async (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    setShowClose(false);
+    try {
+      res = await update_restaurant({
+        close_time: currentTime,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const showOpenTime = () => {
+    setShowOpen(true);
+  };
+
+  const showCloseTime = () => {
+    setShowClose(true);
+  };
+
   const icon_path = Image.resolveAssetSource(
-    // get from api
     require("../../assets/download.png")
   ).uri;
 
@@ -107,16 +154,13 @@ const ProfilePage = ({ route, navigation }) => {
 
   const handleGeneratePDF = () => {
     generatePdf();
-    console.log("PDF generated");
   };
 
   const analysis = () => {
-    console.log("analysis");
     navigation.navigate("Analysis", { username });
   };
 
   const editmenu = () => {
-    console.log("SetMenu");
     navigation.navigate("SetMenu", { username });
   };
 
@@ -139,6 +183,52 @@ const ProfilePage = ({ route, navigation }) => {
       </TouchableOpacity>
       <Text style={styles.userName}>{restaurant.name}</Text>
       <Text style={styles.regNumber}>{userID}</Text>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+        <View style={{ margin: 6 }}>
+          <TouchableOpacity onPress={showOpenTime}>
+            <Text style={{ fontSize: 18 }}>Open Time</Text>
+          </TouchableOpacity>
+          <View>
+            <Text>{open_time.toLocaleTimeString()}</Text>
+          </View>
+        </View>
+        <View style={{ margin: 6 }}>
+          <TouchableOpacity onPress={showCloseTime}>
+            <Text style={{ fontSize: 18 }}>Close Time</Text>
+          </TouchableOpacity>
+          <View>
+            <Text>{close_time.toLocaleTimeString()}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View>
+        <View>
+          {showOpen && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={open_time}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={onChangeOpen}
+            />
+          )}
+        </View>
+        <View>
+          {showClose && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={close_time}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={onChangeClose}
+            />
+          )}
+        </View>
+      </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={editmenu}>
