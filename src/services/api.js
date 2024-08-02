@@ -84,7 +84,7 @@ export const delete_item = (item_id) => {
 };
 
 export const stats = () => {
-  return api.get("/api/stats/restaurants");
+  return api.get("/api/stats/restaurant");
 };
 
 export default api;
