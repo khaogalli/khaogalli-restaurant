@@ -13,6 +13,7 @@ import SetMenu from "./src/screens/SetMenu";
 import ResProfile from "./src/screens/ResProfile";
 import PhotoUpload from "./src/screens/PhotoUpload";
 import Analysis from "./src/screens/Analysis";
+import CustomAnalysis from "./src/screens/CustomAnalysis";
 import { AuthContext, AuthProvider } from "./src/services/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -81,6 +82,13 @@ const App = () => {
         <Stack.Screen
           name="Analysis"
           component={Analysis}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CustomAnalysis"
+          component={CustomAnalysis}
           options={{
             headerShown: false,
           }}

@@ -87,4 +87,8 @@ export const stats = () => {
   return api.get("/api/stats/restaurant");
 };
 
+export const custom_stats = (start, end) => {
+  return api.post("/api/stats/restaurant/custom/days", { start, end });
+};
+
 export default api;
