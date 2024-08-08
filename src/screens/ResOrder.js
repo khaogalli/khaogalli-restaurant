@@ -74,7 +74,7 @@ export default function App({ route, navigation }) {
                 goToHome();
               }}
             >
-              <Text style={styles.buttonText}>Pending</Text>
+              <Text style={styles.buttonText}>Complete</Text>
             </TouchableOpacity>
           ) : null}
         </View>

@@ -152,6 +152,10 @@ const ProfilePage = ({ route, navigation }) => {
     }
   };
 
+  const offers = () => {
+    navigation.navigate("Offers", { username });
+  };
+
   const handleGeneratePDF = () => {
     generatePdf();
   };
@@ -264,6 +268,14 @@ const ProfilePage = ({ route, navigation }) => {
         <TouchableOpacity onPress={analysis}>
           <View style={styles.buttonText}>
             <Text style={styles.name}>Analysis</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={offers}>
+          <View style={styles.buttonText}>
+            <Text style={styles.name}>Offers</Text>
           </View>
         </TouchableOpacity>
       </View>
