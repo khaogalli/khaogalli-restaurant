@@ -6,12 +6,14 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { stats } from "../services/api";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home({ route, navigation }) {
+  const [period, setPeriod] = useState("lunch");
   const username = route.params.username;
   const [refreshing, setRefreshing] = useState(false);
   const [statis, setStatis] = useState({
@@ -190,6 +192,53 @@ export default function Home({ route, navigation }) {
             }}
           />
         </View>
+        <View style={{ justifyContent: "space-around", flexDirection: "row", marginTop: 20 }}>
+          <Pressable
+            onPress={() => {
+              setPeriod("breakfast");
+            }}
+            style={[
+              {
+                borderBottomWidth: period == "breakfast" ? 2 : 0,
+              },
+              styles.filterButton,
+            ]}
+          >
+            <View>
+              <Text>Breakfast</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              setPeriod("lunch");
+            }}
+            style={[
+              {
+                borderBottomWidth: period == "lunch" ? 2 : 0,
+              },
+              styles.filterButton,
+            ]}
+          >
+            <View>
+              <Text>Lunch</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              setPeriod("dinner");
+            }}
+            style={[
+              {
+                borderBottomWidth: period == "dinner" ? 2 : 0,
+              },
+              styles.filterButton,
+            ]}
+          >
+            <View>
+              <Text>Dinner</Text>
+            </View>
+          </Pressable>
+        </View>
         <View
           style={{
             paddingTop: 20,
@@ -294,5 +343,12 @@ const styles = StyleSheet.create({
   selectedDayText: {
     fontWeight: "bold",
     color: "#e26a00",
+  },
+  filterButton: {
+    padding: 10,
+    alignItems: "center",
+    width: "25%",
+    borderRadius: 10,
+    marginLeft: 10,
   },
 });

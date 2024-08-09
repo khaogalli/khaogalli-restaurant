@@ -14,7 +14,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { useFocusEffect } from "@react-navigation/native";
+
 export default function Home({ route, navigation }) {
   const username = route.params.username;
   const [i, setI] = useState("createNewPost");

@@ -7,9 +7,10 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
-import { complete_order } from "../services/api";
+import { cancel_order, complete_order } from "../services/api";
 
 export default function App({ route, navigation }) {
   const { restaurant } = useContext(AuthContext);
@@ -19,9 +20,19 @@ export default function App({ route, navigation }) {
   goToHome = async () => {
     try {
       let res = await complete_order(order.id);
-      navigation.navigate("ResHome", { username }); // this is important to pass username back because we need to show the username on the home screen.
+      navigation.navigate("ResHome", { username });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const cancelOrder = async () => {
+    try {
+      Alert.alert("Cancel", "Are you sure?", [{ text: "Yes" }, { text: "No" }]);
+      let res = await cancel_order(order.id);
+      navigation.navigate("ResHome", { username });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -74,9 +85,19 @@ export default function App({ route, navigation }) {
                 goToHome();
               }}
             >
-              <Text style={styles.buttonText}>Complete</Text>
+              <Text style={styles.buttonText}>Complete Order</Text>
             </TouchableOpacity>
           ) : null}
+        </View>
+        <View style={{ marginTop: 20, alignSelf: "center" }}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "red" }]}
+            onPress={() => {
+              cancelOrder();
+            }}
+          >
+            <Text style={styles.buttonText}>Cancel Order</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -121,7 +142,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: "bold",
-    width: "33%", // Adjusting width to fit three columns
+    width: "33%",
     textAlign: "center",
   },
   row: {
@@ -131,17 +152,17 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    width: "33%", // Adjusting width to fit three columns
+    width: "33%",
     textAlign: "center",
   },
   itemQuantity: {
     fontSize: 16,
-    width: "33%", // Adjusting width to fit three columns
+    width: "33%",
     textAlign: "center",
   },
   itemAmount: {
     fontSize: 16,
-    width: "33%", // Adjusting width to fit three columns
+    width: "33%",
     textAlign: "center",
   },
   total: {

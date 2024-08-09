@@ -91,4 +91,8 @@ export const custom_stats = (start, end) => {
   return api.post("/api/stats/restaurant/custom/days", { start, end });
 };
 
+export const cancel_order = (orderID) => {
+  return api.post("/api/orders/cancel/" + orderID);
+};
+
 export default api;
