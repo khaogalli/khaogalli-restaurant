@@ -95,4 +95,12 @@ export const cancel_order = (orderID) => {
   return api.post("/api/orders/cancel/" + orderID);
 };
 
+export const post_noti = (notification) => {
+  return api.post("/api/notification", notification);
+};
+
+export const get_noti = () => {
+  return api.get("/api/notification/restaurant");
+};
+
 export default api;

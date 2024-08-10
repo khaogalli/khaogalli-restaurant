@@ -14,6 +14,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { BlurView } from "expo-blur";
+import { get_noti, post_noti } from "../services/api";
 
 export default function Home({ route, navigation }) {
   const username = route.params.username;
@@ -29,6 +30,7 @@ export default function Home({ route, navigation }) {
 
   const getPosts = async () => {
     setRefreshing(true);
+    let res = await get_noti();
     setLoading(false);
     setTimeout(() => {
       setRefreshing(false);
@@ -67,9 +69,21 @@ export default function Home({ route, navigation }) {
 
   const deletePost = (id) => {};
 
-  const postOffer = () => {
+  const postOffer = async () => {
     console.log(offerTitle);
     console.log(postDesc);
+    console.log(offerDuration);
+    const notification = {
+      title: offerTitle,
+      body: postDesc,
+      ttl_minutes: parseInt(offerDuration),
+    };
+    console.log(JSON.stringify(notification));
+    try {
+      let res = await post_noti(notification);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -104,7 +118,7 @@ export default function Home({ route, navigation }) {
         }}
       >
         <Text style={{ width: "100%", textAlign: "center" }}>
-          {modalPost.description}
+          {modalPost.body}
         </Text>
       </View>
     );
@@ -322,7 +336,8 @@ export default function Home({ route, navigation }) {
                         <View style={styles.header}></View>
                         {displayItems()}
                       </View>
-                      <Text>{modalPost.created_at}</Text>
+                      <Text>{modalPost.created_at.substring(0, 10)}</Text>
+                      <Text>{modalPost.created_at.substring(11, 19)}</Text>
                       <View>
                         <TouchableOpacity
                           onPress={() => {
