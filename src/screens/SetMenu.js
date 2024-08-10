@@ -12,6 +12,7 @@ import {
   Switch,
   Platform,
   Alert,
+  ScrollView,
 } from "react-native";
 import {
   add_item,
@@ -246,14 +247,16 @@ export default function App({ route, navigation }) {
           </View>
 
           {!loading ? (
-            <View style={{ flex: 1 }}>
-              <FlatList
-                data={menu}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                style={{ padding: 2 }}
-              />
-            </View>
+            <ScrollView>
+              <View style={{ flex: 1 }}>
+                <FlatList
+                  data={menu}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id}
+                  style={{ padding: 2 }}
+                />
+              </View>
+            </ScrollView>
           ) : (
             <>
               <View
@@ -342,7 +345,7 @@ export default function App({ route, navigation }) {
                 Description
               </Text>
               <TextInput
-                style={[styles.input, { height: 40 }]}
+                style={[styles.input, { height: 40, marginBottom: 40 }]}
                 onChangeText={setDescription}
                 value={description}
               />

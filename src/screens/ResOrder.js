@@ -28,9 +28,16 @@ export default function App({ route, navigation }) {
 
   const cancelOrder = async () => {
     try {
-      Alert.alert("Cancel", "Are you sure?", [{ text: "Yes" }, { text: "No" }]);
-      let res = await cancel_order(order.id);
-      navigation.navigate("ResHome", { username });
+      Alert.alert("Cancel", "Are you sure?", [
+        {
+          text: "Yes",
+          onPress: async () => {
+            let res = await cancel_order(order.id);
+            navigation.navigate("ResHome", { username });
+          },
+        },
+        { text: "No" },
+      ]);
     } catch (err) {
       console.log(err);
     }

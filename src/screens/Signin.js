@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 
 import { AuthContext } from "../services/AuthContext";
@@ -54,51 +55,53 @@ export default function Signin({ route, navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.KAV}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.inner}>
-          <SafeAreaView style={styles.SAV}>
-            <StatusBar backgroundColor="#ad8840" />
+      <ScrollView style={{marginTop: "22%"}}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <SafeAreaView style={styles.SAV}>
+              <StatusBar backgroundColor="#ad8840" />
 
-            <View style={[styles.center, styles.h1]}>
-              <Image
-                style={styles.logo}
-                source={require("../../assets/download.png")}
-              />
+              <View style={[styles.center, styles.h1]}>
+                <Image
+                  style={styles.logo}
+                  source={require("../../assets/download.png")}
+                />
 
-              <Text style={styles.signinText}>Sign in</Text>
-              <View style={styles.formContainer}>
-                <View style={{ marginLeft: 15, marginTop: 20 }}>
-                  <Text style={styles.lable}>Username</Text>
-                  <TextInput
-                    style={[styles.input, { height: 40, width: 270 }]}
-                    onChangeText={onChangeText}
-                    value={username}
-                  />
-                  <Text style={styles.lable}>Password</Text>
-                  <TextInput
-                    secureTextEntry={true}
-                    style={[styles.input, { height: 40, width: 270 }]}
-                    onChangeText={onChangePass}
-                    value={password}
-                  />
-                  <Text style={{ color: "#ffbf00", textAlign: "center" }}>
-                    {error}
-                  </Text>
-                  <TouchableOpacity style={styles.button1} onPress={verify}>
-                    <Text style={styles.continueText}>Continue</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={{ marginTop: 15 }}>
-                    <Text style={styles.footerText}>
-                      Not Signed up? Contact admin to sign up.
+                <Text style={styles.signinText}>Sign in</Text>
+                <View style={styles.formContainer}>
+                  <View style={{ marginLeft: 15, marginTop: 20 }}>
+                    <Text style={styles.lable}>Username</Text>
+                    <TextInput
+                      style={[styles.input, { height: 40, width: 270 }]}
+                      onChangeText={onChangeText}
+                      value={username}
+                    />
+                    <Text style={styles.lable}>Password</Text>
+                    <TextInput
+                      secureTextEntry={true}
+                      style={[styles.input, { height: 40, width: 270 }]}
+                      onChangeText={onChangePass}
+                      value={password}
+                    />
+                    <Text style={{ color: "#ffbf00", textAlign: "center" }}>
+                      {error}
                     </Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity style={styles.button1} onPress={verify}>
+                      <Text style={styles.continueText}>Continue</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ marginTop: 15 }}>
+                      <Text style={styles.footerText}>
+                        Not Signed up? Contact admin to sign up.
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </SafeAreaView>
-        </View>
-      </TouchableWithoutFeedback>
+            </SafeAreaView>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

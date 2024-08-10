@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -97,7 +97,7 @@ export default function Home({ route, navigation }) {
             <View style={[styles.renderItem, styles.listShadow]}>
               <View style={{ padding: 10 }}>
                 <Text>Order ID</Text>
-                <Text>{item.id}</Text>
+                <Text>{item.id.substring(24,36)}</Text>
               </View>
               <View style={styles.dateTime}>
                 <Text>{item.created_at.substring(0, 10)}</Text>

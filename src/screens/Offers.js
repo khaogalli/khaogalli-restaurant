@@ -14,7 +14,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { get_noti, post_noti } from "../services/api";
+import { del_noti, get_noti, post_noti } from "../services/api";
 
 export default function Home({ route, navigation }) {
   const username = route.params.username;
@@ -67,7 +67,14 @@ export default function Home({ route, navigation }) {
     setModalVisible(false);
   };
 
-  const deletePost = (id) => {};
+  const deletePost = async (id) => {
+    try {
+      let res = await del_noti(id);
+      getPosts();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const postOffer = async () => {
     console.log(offerTitle);
@@ -81,6 +88,7 @@ export default function Home({ route, navigation }) {
     console.log(JSON.stringify(notification));
     try {
       let res = await post_noti(notification);
+      navigation.navigate("ResHome");
     } catch (err) {
       console.log(err);
     }

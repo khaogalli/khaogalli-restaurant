@@ -103,4 +103,8 @@ export const get_noti = () => {
   return api.get("/api/notification/restaurant");
 };
 
+export const del_noti = (id) => {
+  return api.delete("/api/notification/delete/" + id);
+};
+
 export default api;
