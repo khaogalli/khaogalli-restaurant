@@ -97,14 +97,16 @@ export default function App({ route, navigation }) {
           ) : null}
         </View>
         <View style={{ marginTop: 20, alignSelf: "center" }}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "red" }]}
-            onPress={() => {
-              cancelOrder();
-            }}
-          >
-            <Text style={styles.buttonText}>Cancel Order</Text>
-          </TouchableOpacity>
+          {order.status == "paid" ? (
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "red" }]}
+              onPress={() => {
+                cancelOrder();
+              }}
+            >
+              <Text style={styles.buttonText}>Cancel Order</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>

@@ -29,6 +29,9 @@ export default function Home({ route, navigation }) {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
+    top_3_breakfast_items: [],
+    top_3_lunch_items: [],
+    top_3_dinner_items: [],
   });
 
   const getData = async () => {
@@ -54,8 +57,14 @@ export default function Home({ route, navigation }) {
   const [selectedDay, setSelectedDay] = useState(0);
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const AOV = statis.total_revenue / statis.total_orders;
-  let item_rank = statis.item_frequency;
-  item_rank.sort((a, b) => b[1] - a[1]);
+  let item_rank = [];
+  if (period == "breakfast") {
+    item_rank = statis.top_3_breakfast_items;
+  } else if (period == "lunch") {
+    item_rank = statis.top_3_lunch_items;
+  } else {
+    item_rank = statis.top_3_dinner_items;
+  }
   return (
     <>
       <StatusBar backgroundColor="#ad8840" />
@@ -192,7 +201,13 @@ export default function Home({ route, navigation }) {
             }}
           />
         </View>
-        <View style={{ justifyContent: "space-around", flexDirection: "row", marginTop: 20 }}>
+        <View
+          style={{
+            justifyContent: "space-around",
+            flexDirection: "row",
+            marginTop: 20,
+          }}
+        >
           <Pressable
             onPress={() => {
               setPeriod("breakfast");
@@ -248,7 +263,7 @@ export default function Home({ route, navigation }) {
         >
           <View style={{ marginBottom: 20 }}>
             <Text style={{ textAlign: "center", fontSize: 20 }}>Top 3</Text>
-            {item_rank.slice(0, 3).map((item) => (
+            {item_rank.map((item) => (
               <Text
                 style={{
                   fontSize: 24,
@@ -259,22 +274,6 @@ export default function Home({ route, navigation }) {
                 {item[0]}
               </Text>
             ))}
-          </View>
-          <View>
-            <Text style={{ textAlign: "center", fontSize: 20 }}>Bottom 3</Text>
-            {item_rank
-              .slice(item_rank.length - 3, item_rank.length)
-              .map((item) => (
-                <Text
-                  style={{
-                    fontSize: 24,
-                    color: "#e26a00",
-                    textAlign: "center",
-                  }}
-                >
-                  {item[0]}
-                </Text>
-              ))}
           </View>
         </View>
       </View>

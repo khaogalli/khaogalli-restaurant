@@ -41,20 +41,6 @@ export default function Home({ route, navigation }) {
 
   useEffect(() => {
     getPosts();
-    setPosts([
-      {
-        id: "iuegfikdj",
-        title: "enfoinlsk",
-        description: "uewgirnfwiojcd",
-        created_at: "2021-10-10T00:00:00Z",
-      },
-      {
-        id: "iuegfikdj",
-        title: "enfoinlsk",
-        description: "uewgirnfwiojcd",
-        created_at: "2021-10-10T00:00:00Z",
-      },
-    ]);
   }, []);
   const name = username;
 
@@ -94,25 +80,44 @@ export default function Home({ route, navigation }) {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <Pressable
-      onPress={() => {
-        openModal(item);
-      }}
-    >
-      <>
-        <View style={[styles.renderItem, styles.listShadow]}>
-          <View style={{ padding: 10 }}>
-            <Text>{item.title}</Text>
+  function isexpired(item) {
+    const timestamp = new Date(item.created_at);
+
+    const currentTime = new Date();
+
+    const ttlTime = new Date(timestamp.getTime() + item.ttl_minutes * 60000);
+    return currentTime > ttlTime;
+  }
+
+  const renderItem = ({ item }) =>
+    isexpired(item) ? (
+      <></>
+    ) : (
+      <Pressable
+        onPress={() => {
+          openModal(item);
+        }}
+      >
+        <>
+          <View style={[styles.renderItem, styles.listShadow]}>
+            <View style={{ padding: 10 }}>
+              <Text>{item.title}</Text>
+            </View>
+            <View style={styles.dateTime}>
+              <Text>{item.created_at.substring(0, 10)}</Text>
+              <Text>
+                {new Date(item.created_at).toLocaleTimeString("en-GB", {
+                  hour12: true,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </Text>
+            </View>
           </View>
-          <View style={styles.dateTime}>
-            <Text>{item.created_at.substring(0, 10)}</Text>
-            <Text>{item.created_at.substring(11, 19)}</Text>
-          </View>
-        </View>
-      </>
-    </Pressable>
-  );
+        </>
+      </Pressable>
+    );
 
   const displayItems = () => {
     if (!modalPost) {
@@ -345,7 +350,17 @@ export default function Home({ route, navigation }) {
                         {displayItems()}
                       </View>
                       <Text>{modalPost.created_at.substring(0, 10)}</Text>
-                      <Text>{modalPost.created_at.substring(11, 19)}</Text>
+                      <Text>
+                        {new Date(modalPost.created_at).toLocaleTimeString(
+                          "en-GB",
+                          {
+                            hour12: true,
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          }
+                        )}
+                      </Text>
                       <View>
                         <TouchableOpacity
                           onPress={() => {
