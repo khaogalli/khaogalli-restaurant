@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await loginRestaurant({ username, password });
       const loggedInRestaurant = response.data.restaurant;
-      console.log("logged in restaurant" + loggedInRestaurant);
       setRestaurant(loggedInRestaurant);
       setToken(loggedInRestaurant.token);
       await AsyncStorage.setItem(

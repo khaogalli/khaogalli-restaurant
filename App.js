@@ -1,17 +1,13 @@
 import React, { useContext, useState } from "react";
-import Api from "./src/ApiManager";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-//pages common to both
 import Signin from "./src/screens/Signin";
 import ChangePassword from "./src/screens/ChangePassword";
-//pages for restaurant
 import ResHome from "./src/screens/ResHome";
 import ResOrder from "./src/screens/ResOrder";
 import SetMenu from "./src/screens/SetMenu";
 import ResProfile from "./src/screens/ResProfile";
-import PhotoUpload from "./src/screens/PhotoUpload";
 import Analysis from "./src/screens/Analysis";
 import CustomAnalysis from "./src/screens/CustomAnalysis";
 import Offers from "./src/screens/Offers";
@@ -23,7 +19,6 @@ const App = () => {
   const initialScreen = "Signin";
 
   const { restaurant } = useContext(AuthContext);
-  console.log("test " + restaurant);
   return restaurant ? (
     <NavigationContainer>
       <Stack.Navigator
@@ -104,13 +99,6 @@ const App = () => {
         <Stack.Screen
           name="ResProfile"
           component={ResProfile}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="PhotoUpload"
-          component={PhotoUpload}
           options={{
             headerShown: false,
           }}

@@ -44,7 +44,6 @@ class ApiManager {
   }
 
   async Signup(username, password) {
-    console.log("u87329870");
     const user = {
       username: username,
       password: password,
@@ -60,8 +59,6 @@ class ApiManager {
         },
         body: JSON.stringify(message),
       });
-      console.log("hi");
-      console.log(response.status);
       if ((response.status) === 200) {
         data = response.JSON();
         this.UserInfo.username = data.user.username;
@@ -73,7 +70,6 @@ class ApiManager {
       }else if ((response).status === 500){
         return ( response).status ;
       }else{
-        console.log(response);
         return (response).status;
       }
     } catch (error) {

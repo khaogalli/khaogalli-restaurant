@@ -1,12 +1,9 @@
 import React, {
   useContext,
-  useRef,
   useState,
   useEffect,
   useCallback,
 } from "react";
-import { printToFileAsync } from "expo-print";
-import { shareAsync } from "expo-sharing";
 import {
   View,
   Text,
@@ -15,7 +12,6 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
 import * as ImagePicker from "expo-image-picker";
@@ -42,7 +38,6 @@ const ProfilePage = ({ route, navigation }) => {
       user.username = userName;
     }
     if (password != "" && NewPassword == confirmPassword) {
-      // todo validate new password
       user.update_pass = {
         old_password: password,
         new_password: confirmPassword,
@@ -54,7 +49,6 @@ const ProfilePage = ({ route, navigation }) => {
       navigation.navigate("ResProfile");
       return;
     }
-    console.log("something");
 
     try {
       await update_restaurant(user);
@@ -94,7 +88,6 @@ const ProfilePage = ({ route, navigation }) => {
     });
 
     if (!result.canceled) {
-      console.log(result.assets[0].uri);
 
       try {
         const base64 = await FileSystem.readAsStringAsync(
@@ -106,7 +99,6 @@ const ProfilePage = ({ route, navigation }) => {
 
         const res = await upload_restaurant_image(base64);
         resetNonce();
-        console.log("Image uploaded successfully");
       } catch (error) {
         console.error("Error reading file or uploading image:", error);
       }
@@ -140,7 +132,7 @@ const ProfilePage = ({ route, navigation }) => {
         <TextInput
           style={[styles.input]}
           onChangeText={(text) => {
-            setPassword(text); // Call validate with the new text value
+            setPassword(text); 
           }}
           value={password}
         />
@@ -185,26 +177,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 15,
   },
-  signouttButtonText: {
-    alignSelf: "center",
-    borderColor: "black",
-    borderWidth: 0.5,
-    padding: 5,
-    borderRadius: 5,
-    width: 230,
-    alignItems: "center",
-    backgroundColor: "#ff3c3c",
-  },
-  buttonText: {
-    alignSelf: "center",
-    borderColor: "black",
-    borderWidth: 0.5,
-    padding: 5,
-    borderRadius: 5,
-    width: 230,
-    alignItems: "center",
-  },
-  userName: { fontWeight: "900", fontSize: 26 },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -218,19 +190,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderColor: "black",
     borderWidth: 2,
-  },
-  name: {
-    fontSize: 18,
-    marginBottom: 5,
-  },
-  regNumber: {
-    fontSize: 18,
-    color: "#666",
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    width: "80%",
-    marginBottom: 10,
   },
   input: {
     borderBottomWidth: 1,

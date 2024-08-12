@@ -25,7 +25,6 @@ export default function Home({ route, navigation }) {
   let [searchKey, setSearchKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -35,7 +34,6 @@ export default function Home({ route, navigation }) {
       setTimeout(() => {
         setRefreshing(false);
       }, 2000);
-      console.log(response.data);
       setOrders(response.data);
     } catch (error) {
       console.log(error);
@@ -58,7 +56,6 @@ export default function Home({ route, navigation }) {
   useFocusEffect(useCallback(resetNonce, []));
 
   goToResOrder = (order) => {
-    console.log(order);
     navigation.navigate("ResOrder", { order });
   };
 
@@ -89,7 +86,17 @@ export default function Home({ route, navigation }) {
                 </View>
                 <View style={styles.dateTime}>
                   <Text>{item.created_at.substring(0, 10)}</Text>
-                  <Text>{item.created_at.substring(11, 19)}</Text>
+                  <Text>
+                    {new Date(item.order_placed_time).toLocaleTimeString(
+                      "en-GB",
+                      {
+                        hour12: true,
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      }
+                    )}
+                  </Text>
                 </View>
               </View>
             ) : null
@@ -97,11 +104,21 @@ export default function Home({ route, navigation }) {
             <View style={[styles.renderItem, styles.listShadow]}>
               <View style={{ padding: 10 }}>
                 <Text>Order ID</Text>
-                <Text>{item.id.substring(24,36)}</Text>
+                <Text>{item.id.substring(24, 36)}</Text>
               </View>
               <View style={styles.dateTime}>
                 <Text>{item.created_at.substring(0, 10)}</Text>
-                <Text>{item.created_at.substring(11, 19)}</Text>
+                <Text>
+                  {new Date(item.order_placed_time).toLocaleTimeString(
+                    "en-GB",
+                    {
+                      hour12: true,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    }
+                  )}
+                </Text>
               </View>
             </View>
           )}
@@ -129,35 +146,12 @@ export default function Home({ route, navigation }) {
                 source={{ uri: photo + "?" + nonce }}
                 placeholder={require("../../assets/user.png")}
                 priority="high"
-                style={{
-                  borderWidth: 1,
-                  borderColor: "black",
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                }}
+                style={styles.ProfilePicture}
               />
             </TouchableOpacity>
           </View>
         </View>
-        <View
-          style={{
-            height: 50,
-            borderRadius: 25,
-            marginHorizontal: 5,
-            padding: 10,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            backgroundColor: "#ffffff",
-            marginBottom: 5,
-          }}
-        >
+        <View style={styles.Search}>
           <ExpoImage
             source={require("../../assets/looking.gif")}
             style={{ height: 35, width: 35, borderRadius: 20, marginLeft: 5 }}
@@ -165,14 +159,7 @@ export default function Home({ route, navigation }) {
           <TextInput
             onChangeText={setSearchKey}
             value={searchKey}
-            style={{
-              height: 53,
-              borderRadius: 25,
-              padding: 10,
-              width: "93%",
-              position: "absolute",
-              right: 0,
-            }}
+            style={styles.SearchText}
           />
         </View>
         <TouchableOpacity
@@ -208,9 +195,8 @@ export default function Home({ route, navigation }) {
             <View
               style={[
                 styles.renderItem,
+                styles.loading,
                 {
-                  height: 85,
-                  backgroundColor: "#333333",
                   opacity: 0.5,
                 },
               ]}
@@ -218,9 +204,8 @@ export default function Home({ route, navigation }) {
             <View
               style={[
                 styles.renderItem,
+                styles.loading,
                 {
-                  height: 85,
-                  backgroundColor: "#333333",
                   opacity: 0.4,
                 },
               ]}
@@ -228,9 +213,8 @@ export default function Home({ route, navigation }) {
             <View
               style={[
                 styles.renderItem,
+                styles.loading,
                 {
-                  height: 85,
-                  backgroundColor: "#333333",
                   opacity: 0.3,
                 },
               ]}
@@ -238,9 +222,8 @@ export default function Home({ route, navigation }) {
             <View
               style={[
                 styles.renderItem,
+                styles.loading,
                 {
-                  height: 85,
-                  backgroundColor: "#333333",
                   opacity: 0.2,
                 },
               ]}
@@ -248,9 +231,8 @@ export default function Home({ route, navigation }) {
             <View
               style={[
                 styles.renderItem,
+                styles.loading,
                 {
-                  height: 85,
-                  backgroundColor: "#333333",
                   opacity: 0.1,
                 },
               ]}
@@ -263,6 +245,41 @@ export default function Home({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    height: 85,
+    backgroundColor: "#333333",
+  },
+  SearchText: {
+    height: 53,
+    borderRadius: 25,
+    padding: 10,
+    width: "93%",
+    position: "absolute",
+    right: 0,
+  },
+  Search: {
+    height: 50,
+    borderRadius: 25,
+    marginHorizontal: 5,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: "#ffffff",
+    marginBottom: 5,
+  },
+  ProfilePicture: {
+    borderWidth: 1,
+    borderColor: "black",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
   filterButton: {
     padding: 10,
     alignItems: "center",

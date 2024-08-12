@@ -35,7 +35,6 @@ export default function Home({ route, navigation }) {
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
-    console.log(res.data);
     setPosts(res.data);
   };
 
@@ -63,15 +62,11 @@ export default function Home({ route, navigation }) {
   };
 
   const postOffer = async () => {
-    console.log(offerTitle);
-    console.log(postDesc);
-    console.log(offerDuration);
     const notification = {
       title: offerTitle,
       body: postDesc,
       ttl_minutes: parseInt(offerDuration),
     };
-    console.log(JSON.stringify(notification));
     try {
       let res = await post_noti(notification);
       navigation.navigate("ResHome");
@@ -82,9 +77,7 @@ export default function Home({ route, navigation }) {
 
   function isexpired(item) {
     const timestamp = new Date(item.created_at);
-
     const currentTime = new Date();
-
     const ttlTime = new Date(timestamp.getTime() + item.ttl_minutes * 60000);
     return currentTime > ttlTime;
   }
@@ -188,14 +181,7 @@ export default function Home({ route, navigation }) {
           <>
             <ScrollView>
               <Text style={{ textAlign: "center", fontSize: 20 }}>Title</Text>
-              <View
-                style={{
-                  borderWidth: 2,
-                  borderColor: "#000000",
-                  margin: 10,
-                  borderRadius: 5,
-                }}
-              >
+              <View style={styles.InputHeading}>
                 <TextInput
                   editable
                   onChangeText={(text) => setOfferTitle(text)}
@@ -207,14 +193,7 @@ export default function Home({ route, navigation }) {
               <Text style={{ textAlign: "center", fontSize: 20 }}>
                 Description
               </Text>
-              <View
-                style={{
-                  borderWidth: 2,
-                  borderColor: "#000000",
-                  margin: 10,
-                  borderRadius: 5,
-                }}
-              >
+              <View style={styles.InputHeading}>
                 <TextInput
                   editable
                   multiline
@@ -229,14 +208,7 @@ export default function Home({ route, navigation }) {
               <Text style={{ textAlign: "center", fontSize: 20 }}>
                 Duration (in mins)
               </Text>
-              <View
-                style={{
-                  borderWidth: 2,
-                  borderColor: "#000000",
-                  margin: 10,
-                  borderRadius: 5,
-                }}
-              >
+              <View style={styles.InputHeading}>
                 <TextInput
                   editable
                   onChangeText={(text) => setOfferDuration(text)}
@@ -280,9 +252,8 @@ export default function Home({ route, navigation }) {
                 <View
                   style={[
                     styles.renderItem,
+                    styles.loading,
                     {
-                      height: 85,
-                      backgroundColor: "#333333",
                       opacity: 0.5,
                     },
                   ]}
@@ -290,9 +261,8 @@ export default function Home({ route, navigation }) {
                 <View
                   style={[
                     styles.renderItem,
+                    styles.loading,
                     {
-                      height: 85,
-                      backgroundColor: "#333333",
                       opacity: 0.4,
                     },
                   ]}
@@ -300,9 +270,8 @@ export default function Home({ route, navigation }) {
                 <View
                   style={[
                     styles.renderItem,
+                    styles.loading,
                     {
-                      height: 85,
-                      backgroundColor: "#333333",
                       opacity: 0.3,
                     },
                   ]}
@@ -310,9 +279,8 @@ export default function Home({ route, navigation }) {
                 <View
                   style={[
                     styles.renderItem,
+                    styles.loading,
                     {
-                      height: 85,
-                      backgroundColor: "#333333",
                       opacity: 0.2,
                     },
                   ]}
@@ -320,9 +288,8 @@ export default function Home({ route, navigation }) {
                 <View
                   style={[
                     styles.renderItem,
+                    styles.loading,
                     {
-                      height: 85,
-                      backgroundColor: "#333333",
                       opacity: 0.1,
                     },
                   ]}
@@ -367,12 +334,7 @@ export default function Home({ route, navigation }) {
                             deletePost(modalPost.id);
                             closeModal();
                           }}
-                          style={{
-                            margin: 10,
-                            backgroundColor: "red",
-                            padding: 10,
-                            borderRadius: 5,
-                          }}
+                          style={styles.DelButton}
                         >
                           <View>
                             <Text>Delete</Text>
@@ -392,6 +354,22 @@ export default function Home({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  DelButton: {
+    margin: 10,
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+  },
+  loading: {
+    height: 85,
+    backgroundColor: "#333333",
+  },
+  InputHeading: {
+    borderWidth: 2,
+    borderColor: "#000000",
+    margin: 10,
+    borderRadius: 5,
+  },
   table: {
     marginBottom: 20,
   },

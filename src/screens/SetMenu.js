@@ -25,7 +25,6 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../services/AuthContext";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { genNonce } from "../services/utils";
@@ -159,8 +158,6 @@ export default function App({ route, navigation }) {
     });
 
     if (!result.canceled) {
-      console.log(result.assets[0].uri);
-
       try {
         const base64 = await FileSystem.readAsStringAsync(
           result.assets[0].uri,
@@ -171,7 +168,6 @@ export default function App({ route, navigation }) {
 
         const res = await update_item({ id, image: base64 });
         resetNonce();
-        console.log("Image uploaded successfully");
       } catch (error) {
         console.error("Error reading file or uploading image:", error);
       }
@@ -262,9 +258,8 @@ export default function App({ route, navigation }) {
               <View
                 style={[
                   styles.listItem,
+                  styles.loading,
                   {
-                    height: 85,
-                    backgroundColor: "#333333",
                     opacity: 0.5,
                   },
                 ]}
@@ -272,9 +267,8 @@ export default function App({ route, navigation }) {
               <View
                 style={[
                   styles.listItem,
+                  styles.loading,
                   {
-                    height: 85,
-                    backgroundColor: "#333333",
                     opacity: 0.4,
                   },
                 ]}
@@ -282,9 +276,8 @@ export default function App({ route, navigation }) {
               <View
                 style={[
                   styles.listItem,
+                  styles.loading,
                   {
-                    height: 85,
-                    backgroundColor: "#333333",
                     opacity: 0.3,
                   },
                 ]}
@@ -292,22 +285,14 @@ export default function App({ route, navigation }) {
               <View
                 style={[
                   styles.listItem,
+                  styles.loading,
                   {
-                    height: 85,
-                    backgroundColor: "#333333",
                     opacity: 0.2,
                   },
                 ]}
               ></View>
               <View
-                style={[
-                  styles.listItem,
-                  {
-                    height: 85,
-                    backgroundColor: "#333333",
-                    opacity: 0.1,
-                  },
-                ]}
+                style={[styles.listItem, styles.loading, { opacity: 0.1 }]}
               ></View>
             </>
           )}
@@ -358,6 +343,10 @@ export default function App({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    height: 85,
+    backgroundColor: "#333333",
+  },
   inputContainer: {
     alignItems: "center",
   },

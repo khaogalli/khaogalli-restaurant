@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   StatusBar,
   View,
@@ -131,11 +131,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-  },
-  heading2: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 20,
   },
   table: {
     marginBottom: 20,

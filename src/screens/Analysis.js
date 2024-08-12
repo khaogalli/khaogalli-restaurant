@@ -38,7 +38,6 @@ export default function Home({ route, navigation }) {
     setRefreshing(true);
     try {
       let res = await stats();
-      console.log(res.data);
       setStatis(res.data);
     } catch (e) {
       console.log(e);
@@ -306,30 +305,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  renderItem: {
-    padding: 15,
-    marginBottom: 7,
-    margin: 2,
-    borderRadius: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  listShadow: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
   },
   selectedDayContainer: {
     borderBottomWidth: 2,

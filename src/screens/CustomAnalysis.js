@@ -13,6 +13,7 @@ import { LineChart } from "react-native-chart-kit";
 import { custom_stats, stats } from "../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { eachDayOfInterval, format } from "date-fns";
+import { Filter } from "react-native-svg";
 
 export default function Home({ route, navigation }) {
   const [period, setPeriod] = useState("lunch");
@@ -34,7 +35,6 @@ export default function Home({ route, navigation }) {
   let getData = async () => {
     try {
       let res = await custom_stats(startDate, endDate);
-      console.log(res.data);
       setStatis(res.data);
     } catch (err) {
       console.log(err);
@@ -91,39 +91,15 @@ export default function Home({ route, navigation }) {
           <Text style={styles.userName}>{name}</Text>
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginBottom: 20,
-          }}
-        >
+        <View style={styles.DateContainer}>
           <View>
             <TouchableOpacity
               title="Open"
-              style={{
-                borderBottomColor: "#e26a00",
-                backgroundColor: "#e26a00",
-                opacity: 0.8,
-                padding: 10,
-                height: 40,
-                width: 140,
-                margin: 10,
-                borderRadius: 5,
-                borderBottomWidth: 4,
-              }}
+              style={styles.DateButton}
               onPress={() => setOpenStart(true)}
             >
               <View>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#ffffff",
-                    fontWeight: "900",
-                  }}
-                >
-                  Start Date
-                </Text>
+                <Text style={styles.DateText}>Start Date</Text>
               </View>
             </TouchableOpacity>
             <View>
@@ -135,29 +111,11 @@ export default function Home({ route, navigation }) {
           <View>
             <TouchableOpacity
               title="Close"
-              style={{
-                borderBottomColor: "#e26a00",
-                backgroundColor: "#e26a00",
-                opacity: 0.8,
-                padding: 10,
-                height: 40,
-                width: 140,
-                margin: 10,
-                borderRadius: 5,
-                borderBottomWidth: 4,
-              }}
+              style={styles.DateButton}
               onPress={() => setOpenStart(true)}
             >
               <View>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#ffffff",
-                    fontWeight: "900",
-                  }}
-                >
-                  End Date
-                </Text>
+                <Text style={styles.DateText}>End Date</Text>
               </View>
             </TouchableOpacity>
             <View>
@@ -274,20 +232,8 @@ export default function Home({ route, navigation }) {
             }}
           />
         </View>
-        <View
-          style={{
-            paddingTop: 20,
-            flexDirection: "column",
-            justifyContent: "space-around",
-          }}
-        >
-          <View
-            style={{
-              justifyContent: "space-around",
-              flexDirection: "row",
-              marginTop: 20,
-            }}
-          >
+        <View style={styles.TopSection}>
+          <View style={styles.FilterButtonsContainer}>
             <Pressable
               onPress={() => {
                 setPeriod("breakfast");
@@ -337,15 +283,7 @@ export default function Home({ route, navigation }) {
           <View style={{ marginBottom: 20 }}>
             <Text style={{ textAlign: "center", fontSize: 20 }}>Top 3</Text>
             {item_rank.map((item) => (
-              <Text
-                style={{
-                  fontSize: 24,
-                  color: "#e26a00",
-                  textAlign: "center",
-                }}
-              >
-                {item[0]}
-              </Text>
+              <Text style={styles.TopList}>{item[0]}</Text>
             ))}
           </View>
         </View>
@@ -355,11 +293,41 @@ export default function Home({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container_day: {
+  DateText: {
+    textAlign: "center",
+    color: "#ffffff",
+    fontWeight: "900",
+  },
+  DateButton: {
+    borderBottomColor: "#e26a00",
+    backgroundColor: "#e26a00",
+    opacity: 0.8,
+    padding: 10,
+    height: 40,
+    width: 140,
+    margin: 10,
+    borderRadius: 5,
+    borderBottomWidth: 4,
+  },
+  DateContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingHorizontal: 10,
-    backgroundColor: "#f4f4f4",
+    marginBottom: 20,
+  },
+  TopSection: {
+    paddingTop: 20,
+    flexDirection: "column",
+    justifyContent: "space-around",
+  },
+  FilterButtonsContainer: {
+    justifyContent: "space-around",
+    flexDirection: "row",
+    marginTop: 20,
+  },
+  TopList: {
+    fontSize: 24,
+    color: "#e26a00",
+    textAlign: "center",
   },
   userName: {
     fontSize: 28,
@@ -378,42 +346,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 20,
-  },
-  renderItem: {
-    padding: 15,
-    marginBottom: 7,
-    margin: 2,
-    borderRadius: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  listShadow: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  selectedDayContainer: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#e26a00",
-  },
-  dayText: {
-    fontSize: 16,
-    color: "black",
-  },
-  selectedDayText: {
-    fontWeight: "bold",
-    color: "#e26a00",
   },
   filterButton: {
     padding: 10,

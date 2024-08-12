@@ -21,7 +21,6 @@ export default function Signin({ route, navigation }) {
   const [username, onChangeText] = React.useState("");
   const [password, onChangePass] = React.useState("");
   const [error, setError] = React.useState("");
-
   const { login } = useContext(AuthContext);
 
   const verify = async () => {
@@ -38,7 +37,7 @@ export default function Signin({ route, navigation }) {
     try {
       await login(username, password);
     } catch (err) {
-      console.log("hi" + err);
+      console.log(err);
       if (err.response.status == 422) {
         if (err.response.data.errors.hasOwnProperty("username"))
           setError("Username does not exist");

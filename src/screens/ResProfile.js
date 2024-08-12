@@ -7,11 +7,9 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import { AuthContext } from "../services/AuthContext";
 import {
-  api_update_restaurant,
   get_orders,
   RESTAURANT_IMAGE_URL,
 } from "../services/api";
@@ -26,10 +24,8 @@ const ProfilePage = ({ route, navigation }) => {
   const userID = restaurant.id;
   const [showOpen, setShowOpen] = useState(false);
   const [showClose, setShowClose] = useState(false);
-  console.log(restaurant.open_time);
   let open_time = new Date(restaurant.open_time);
   let close_time = new Date(restaurant.close_time);
-
   const { logout } = useContext(AuthContext);
 
   goToChnagePassword = () => {
@@ -41,7 +37,6 @@ const ProfilePage = ({ route, navigation }) => {
   useEffect(() => {
     const getData = async () => {
       let res = await get_orders(100);
-      console.log(res.data[0].items);
       setHistory(res.data);
     };
     getData();
@@ -148,7 +143,6 @@ const ProfilePage = ({ route, navigation }) => {
   };
 
   const handleLogout = async () => {
-    console.log("Logout");
     try {
       await logout();
     } catch (error) {
